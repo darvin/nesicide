@@ -28,8 +28,9 @@
 #include "cobjectregistry.h"
 #include "breakpointwatcherthread.h"
 #include "main.h"
-
+#ifndef __APPLE__
 #include "DirectSound.h"
+#endif
 
 #undef main
 #include <SDL.h>
@@ -119,8 +120,9 @@ NESEmulatorThread::NESEmulatorThread(QObject*)
 //   sdlAudioSpec.samples = APU_SAMPLES;
 
 //   SDL_OpenAudio ( &sdlAudioSpec, NULL );
+#ifndef __APPLE__
    sdlHooks.append(SDL_Emulator);
-
+#endif
    nesClearAudioSamplesAvailable();
 
    BreakpointWatcherThread* breakpointWatcher = dynamic_cast<BreakpointWatcherThread*>(CObjectRegistry::getObject("Breakpoint Watcher"));

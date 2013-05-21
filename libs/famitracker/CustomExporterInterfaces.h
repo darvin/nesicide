@@ -7,11 +7,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful, 
+** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-** Library General Public License for more details.  To obtain a 
-** copy of the GNU Library General Public License, write to the Free 
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.  To obtain a
+** copy of the GNU Library General Public License, write to the Free
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -111,13 +111,13 @@ struct FamitrackerDocInterface
 	unsigned int (__cdecl *GetNoteEffectParam)(unsigned int Frame, unsigned int Channel, unsigned int Row, int Index);
 
     //DPCM functions
-	int (__cdecl *GetSampleCount)();
-	void (__cdecl *GetSampleName)(unsigned int Index, char *Name);
-	int (__cdecl *GetSampleSize)(unsigned int Sample);
-	char (__cdecl *GetSampleData)(unsigned int Sample, unsigned int Offset);
+	int( *GetSampleCount)();
+	void( *GetSampleName)(unsigned int Index, char *Name);
+	int( *GetSampleSize)(unsigned int Sample);
+	char( *GetSampleData)(unsigned int Sample, unsigned int Offset);
 
 	//DPCM instrument functions
-	char (__cdecl *GetSample)(Instrument2A03Handle instrument, int Octave, int Note);
-	char (__cdecl *GetSamplePitch)(Instrument2A03Handle instrument, int Octave, int Note);
-	char (__cdecl *GetSampleLoopOffset)(Instrument2A03Handle instrument, int Octave, int Note);
+	char ( *GetSample)(Instrument2A03Handle instrument, int Octave, int Note);
+	char ( *GetSamplePitch)(Instrument2A03Handle instrument, int Octave, int Note);
+	char ( *GetSampleLoopOffset)(Instrument2A03Handle instrument, int Octave, int Note);
 };

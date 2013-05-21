@@ -59,8 +59,14 @@ mac {
    }
    FAMITRACKER_CXXFLAGS = -I$$TOP/libs/famitracker
 
-   SDL_CXXFLAGS = -I$$DEPENDENCYPATH/SDL.framework/Headers
-   SDL_LIBS = -F$$DEPENDENCYPATH -framework SDL
+   isEmpty (SDL_CXXFLAGS) {
+    SDL_CXXFLAGS = $$system(sdl-config --cflags)
+   }
+
+   isEmpty (SDL_LIBS) {
+    SDL_LIBS = $$system(sdl-config --libs)
+   }
+
 
    #ICON = mac/resources/nesicide.icns
 
@@ -120,8 +126,8 @@ LIBS += $$FAMITRACKER_LIBS \
         $$SCINTILLA_LIBS
 
 unix:mac {
-	QMAKE_CFLAGS += -I $$DEPENDENCYPATH/wine/include -DWINE_UNICODE_NATIVE
-	QMAKE_CXXFLAGS += -I $$DEPENDENCYPATH/wine/include -DWINE_UNICODE_NATIVE
+	QMAKE_CFLAGS += -I /usr/local/include/wine/windows -DWINE_UNICODE_NATIVE
+	QMAKE_CXXFLAGS += -I /usr/local/include/wine/windows -DWINE_UNICODE_NATIVE
 }
 
 unix:!mac {

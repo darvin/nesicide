@@ -65,34 +65,42 @@
 //#define _DEBUG
 #endif
 
+
+#ifdef __APPLE__
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#define _MAX_PATH 256
+#endif
+
+
 // Define resources here that are "hidden under the hood" of MFC...
 enum
 {
    __UNDER_THE_HOOD_START = 0x8000000,
-   
+
    AFX_IDS_ALLFILTER,
    AFX_IDS_OPENFILE,
-   
+
    WM_SIZEPARENT,
    WM_INITIALUPDATE,
-   
+
    IDC_STATIC,
 
    AFX_IDW_PANE_FIRST,
    AFX_IDW_STATUS_BAR,
    AFX_IDW_TOOLBAR,
    AFX_IDW_REBAR,
-   
+
    ID_SEPARATOR,
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    AFX_IDS_APP_TITLE       ,
    AFX_IDS_IDLEMESSAGE     ,
    AFX_IDS_HELPMODEMESSAGE,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_INDICATOR_EXT        ,
    ID_INDICATOR_CAPS       ,
@@ -101,8 +109,8 @@ enum
    ID_INDICATOR_OVR        ,
    ID_INDICATOR_REC        ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_FILE_NEW             ,
    ID_FILE_OPEN            ,
@@ -110,8 +118,8 @@ enum
    ID_FILE_SAVE            ,
    ID_FILE_SAVE_AS         ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_APP_ABOUT            ,
    ID_APP_EXIT             ,
@@ -121,8 +129,8 @@ enum
    ID_CONTEXT_HELP         ,
    ID_HELP                 ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_FILE_MRU_FILE1       ,
    ID_FILE_MRU_FILE2       ,
@@ -142,18 +150,18 @@ enum
    ID_FILE_MRU_FILE16      ,
 //   END
 
-//   STRINGTABLE 
+//   STRINGTABLE
 //   BEGIN
    ID_NEXT_PANE            ,
    ID_PREV_PANE            ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_WINDOW_SPLIT         ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_EDIT_CLEAR           ,
    ID_EDIT_CLEAR_ALL       ,
@@ -167,14 +175,14 @@ enum
    ID_EDIT_UNDO            ,
    ID_EDIT_REDO            ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    ID_VIEW_TOOLBAR         ,
    ID_VIEW_STATUS_BAR      ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    AFX_IDS_SCSIZE          ,
    AFX_IDS_SCMOVE          ,
@@ -184,8 +192,8 @@ enum
    AFX_IDS_SCPREVWINDOW    ,
    AFX_IDS_SCCLOSE         ,
 //   END
-   
-//   STRINGTABLE 
+
+//   STRINGTABLE
 //   BEGIN
    AFX_IDS_SCRESTORE       ,
    AFX_IDS_SCTASKLIST      ,
@@ -231,14 +239,14 @@ struct AFX_SIZEPARENTPARAMS
 };
 
 #if UNICODE
-typedef LPCWSTR LPCTSTR; 
+typedef LPCWSTR LPCTSTR;
 typedef wchar_t TCHAR;
 #define _T(x) L##x
 #else
 typedef LPCSTR LPCTSTR;
 typedef char TCHAR;
 #define _T(x) x
-#endif 
+#endif
 #if !defined(TRACE0)
 #define TRACE0(x) { QString str; str.sprintf("TRACE0: %s(%d): %s",__FILE__,__LINE__, (x)); qDebug(str.toLatin1().constData()); }
 #endif
@@ -257,14 +265,14 @@ char* T2A(TCHAR* str);
 
 typedef int* POSITION;
 
-#define DECLARE_DYNCREATE(x) 
+#define DECLARE_DYNCREATE(x)
 #define DECLARE_MESSAGE_MAP()
 #define DECLARE_DYNAMIC(x)
 #define IMPLEMENT_DYNAMIC(x,y)
 
 #define RUNTIME_CLASS(x) new x
 
-#define AFX_MSG_CALL 
+#define AFX_MSG_CALL
 typedef struct
 {
 //   void( AFX_MSG_CALL CCmdTarget::* )( void ) 	pmf;
@@ -308,12 +316,12 @@ typedef struct
 int AfxMessageBox(
    LPCTSTR lpszText,
    UINT nType = MB_OK,
-   UINT nIDHelp = 0 
+   UINT nIDHelp = 0
 );
 int AFXAPI AfxMessageBox(
    UINT nIDPrompt,
    UINT nType = MB_OK,
-   UINT nIDHelp = (UINT) -1 
+   UINT nIDHelp = (UINT) -1
 );
 
 DWORD WINAPI GetModuleFileName(
@@ -418,7 +426,7 @@ public:
       UINT nID,
       int nCode,
       void* pExtra,
-      AFX_CMDHANDLERINFO* pHandlerInfo 
+      AFX_CMDHANDLERINFO* pHandlerInfo
    );
 };
 
@@ -426,12 +434,12 @@ class CSyncObject
 {
 public:
    virtual BOOL Lock(
-      DWORD dwTimeout = INFINITE 
+      DWORD dwTimeout = INFINITE
    ) { return TRUE; }
-   virtual BOOL Unlock( ) = 0; 
+   virtual BOOL Unlock( ) = 0;
    virtual BOOL Unlock(
       LONG lCount,
-      LPLONG lpPrevCount = NULL 
+      LPLONG lpPrevCount = NULL
    ) { return TRUE; }
 };
 
@@ -441,9 +449,9 @@ public:
    CCriticalSection();
    virtual ~CCriticalSection();
    BOOL Lock(
-      DWORD dwTimeout = INFINITE 
+      DWORD dwTimeout = INFINITE
    );
-   BOOL Unlock( ); 
+   BOOL Unlock( );
 protected:
    QMutex* _qtd;
 };
@@ -454,13 +462,13 @@ public:
    CMutex(
       BOOL bInitiallyOwn = FALSE,
       LPCTSTR lpszName = NULL,
-      LPSECURITY_ATTRIBUTES lpsaAttribute = NULL 
+      LPSECURITY_ATTRIBUTES lpsaAttribute = NULL
    );
    virtual ~CMutex();
    BOOL Lock(
-      DWORD dwTimeout = INFINITE 
+      DWORD dwTimeout = INFINITE
    );
-   BOOL Unlock( ); 
+   BOOL Unlock( );
 protected:
    QMutex* _qtd;
 };
@@ -488,9 +496,9 @@ public:
    CString(QString str);
    CString(LPCTSTR str);
    virtual ~CString();
-   
+
    BOOL LoadString( UINT nID );
-   
+
    void UpdateScratch();
 
    CString& Append(LPCSTR str);
@@ -503,7 +511,7 @@ public:
    void Truncate(int length);
    int ReverseFind( TCHAR ch ) const;
    int Compare( LPCTSTR lpsz ) const;
- 
+
    CString& operator=(const CString& str);
    CString& operator=(LPCTSTR str);
    CString& operator=(QString str);
@@ -516,25 +524,25 @@ public:
    CString& operator+=(QString str);
    operator QString() const;
    operator const TCHAR*() const;
-   
+
    void Empty();
    LPCTSTR GetString() const;
    LPTSTR GetBuffer( int nMinBufLength = 0 );
    void ReleaseBuffer( int nNewLength = -1 );
-   int Find( TCHAR ch ) const;   
+   int Find( TCHAR ch ) const;
    int Find( LPCTSTR lpszSub ) const;
    int Find( TCHAR ch, int nStart ) const;
    int Find( LPCTSTR pstr, int nStart ) const;
    CString Left( int nCount ) const;
    CString Right( int nCount ) const;
-   CString Mid( int nFirst ) const;  
+   CString Mid( int nFirst ) const;
    CString Mid( int nFirst, int nCount ) const;
    CString MakeUpper( );
    CString MakeLower( );
    int GetLength() const;
    int CompareNoCase( LPCTSTR lpsz ) const;
    TCHAR GetAt( int nIndex ) const;
-   
+
 protected:
    QString _qstr;
    QByteArray _qstrn;
@@ -555,8 +563,8 @@ public:
    CString GetAt(int idx) const;
    void SetAt(int idx, CString str);
    INT_PTR GetCount( ) const;
-   CString operator []( INT_PTR nIndex );  
-   CString operator []( INT_PTR nIndex ) const; 
+   CString operator []( INT_PTR nIndex );
+   CString operator []( INT_PTR nIndex ) const;
    BOOL IsEmpty( ) const;
 private:
    QList<CString> _qlist;
@@ -599,7 +607,7 @@ public:
    CFile();
    CFile(
       LPCTSTR lpszFileName,
-      UINT nOpenFlags 
+      UINT nOpenFlags
    );
    virtual ~CFile();
 
@@ -620,7 +628,7 @@ public:
    );
    virtual ULONGLONG Seek(
       LONGLONG lOff,
-      UINT nFrom 
+      UINT nFrom
    );
    virtual void Close();
 
@@ -660,19 +668,19 @@ public:
 class CSize : public tagSIZE
 {
 public:
-   CSize( ) { cx = 0; cy = 0; } 
-   CSize( 
-      int initCX, 
-      int initCY  
+   CSize( ) { cx = 0; cy = 0; }
+   CSize(
+      int initCX,
+      int initCY
    ) { cx = initCX; cy = initCY; }
-   CSize( 
-      SIZE initSize  
+   CSize(
+      SIZE initSize
    ) { cx = initSize.cx; cy = initSize.cy; }
-   CSize( 
-      POINT initPt  
+   CSize(
+      POINT initPt
    ) { cx = initPt.x; cy = initPt.y; }
-   CSize( 
-      DWORD dwSize  
+   CSize(
+      DWORD dwSize
    ) { cx = dwSize&0xFFFF; cy = (dwSize>>16); }
    CSize(QSize qSize) { cx = qSize.width(); cy = qSize.height(); }
 };
@@ -680,73 +688,73 @@ public:
 class CRect : public tagRECT
 {
 public:
-   CRect( ); 
-   CRect( 
-      int l, 
-      int t, 
-      int r, 
-      int b  
+   CRect( );
+   CRect(
+      int l,
+      int t,
+      int r,
+      int b
    );
-   CRect( 
-      const RECT& srcRect  
+   CRect(
+      const RECT& srcRect
    );
-   CRect( 
-      LPCRECT lpSrcRect  
+   CRect(
+      LPCRECT lpSrcRect
    );
-   CRect( 
-      POINT point, 
-      SIZE size  
+   CRect(
+      POINT point,
+      SIZE size
    );
-   CRect( 
-      POINT topLeft, 
-      POINT bottomRight  
+   CRect(
+      POINT topLeft,
+      POINT bottomRight
    );
    int Width() const { return right-left; }
    int Height() const { return bottom-top; }
-   void MoveToX( 
-      int x  
+   void MoveToX(
+      int x
    );
    void MoveToY(
       int y
    );
    void MoveToXY(
       int x,
-      int y 
+      int y
    );
    void MoveToXY(
-      POINT point 
-   );   
-   void DeflateRect( 
-      int x, 
-      int y  
+      POINT point
    );
-   void DeflateRect( 
-      SIZE size  
+   void DeflateRect(
+      int x,
+      int y
    );
-   void DeflateRect( 
-      LPCRECT lpRect  
+   void DeflateRect(
+      SIZE size
    );
-   void DeflateRect( 
-      int l, 
-      int t, 
-      int r, 
-      int b  
+   void DeflateRect(
+      LPCRECT lpRect
    );
-   void InflateRect( 
-      int x, 
-      int y  
+   void DeflateRect(
+      int l,
+      int t,
+      int r,
+      int b
    );
-   void InflateRect( 
-      SIZE size  
+   void InflateRect(
+      int x,
+      int y
    );
-   void InflateRect( 
-      LPCRECT lpRect  
+   void InflateRect(
+      SIZE size
    );
-   void InflateRect( 
-      int l, 
-      int t, 
-      int r, 
-      int b  
+   void InflateRect(
+      LPCRECT lpRect
+   );
+   void InflateRect(
+      int l,
+      int t,
+      int r,
+      int b
    );
    operator LPRECT() const
    {
@@ -781,20 +789,20 @@ public:
    CPen(
       int nPenStyle,
       int nWidth,
-      COLORREF crColor 
+      COLORREF crColor
    );
    CPen(
       int nPenStyle,
       int nWidth,
       const LOGBRUSH* pLogBrush,
       int nStyleCount = 0,
-      const DWORD* lpStyle = NULL 
+      const DWORD* lpStyle = NULL
    );
    virtual ~CPen() {}
    BOOL CreatePen(
       int nPenStyle,
       int nWidth,
-      COLORREF crColor 
+      COLORREF crColor
    );
    operator QPen() const
    {
@@ -816,29 +824,29 @@ class CBitmap : public CGdiObject
 public:
    CBitmap(QString resource);
    QPixmap* toQPixmap() { return _qpixmap; }
-   
+
    // MFC interfaces
 public:
    CBitmap();
    virtual ~CBitmap();
    BOOL LoadBitmap(
-      UINT nIDResource 
+      UINT nIDResource
    );
    BOOL CreateBitmap(
       int nWidth,
       int nHeight,
       UINT nPlanes,
       UINT nBitcount,
-      const void* lpBits 
+      const void* lpBits
    );
    BOOL CreateCompatibleBitmap(
       CDC* pDC,
       int nWidth,
-      int nHeight 
+      int nHeight
    );
    CSize SetBitmapDimension(
       int nWidth,
-      int nHeight 
+      int nHeight
    );
    CSize GetBitmapDimension( ) const;
    operator QPixmap() const
@@ -859,14 +867,14 @@ class CBrush : public CGdiObject
 public:
    CBrush( );
    CBrush(
-      COLORREF crColor 
+      COLORREF crColor
    );
    CBrush(
       int nIndex,
-      COLORREF crColor 
+      COLORREF crColor
    );
    explicit CBrush(
-      CBitmap* pBitmap 
+      CBitmap* pBitmap
    );
    virtual ~CBrush() {}
    operator QBrush() const
@@ -900,10 +908,10 @@ public:
       BYTE nClipPrecision,
       BYTE nQuality,
       BYTE nPitchAndFamily,
-      LPCTSTR lpszFacename 
+      LPCTSTR lpszFacename
    );
    BOOL CreateFontIndirect(
-      const LOGFONT* lpLogFont 
+      const LOGFONT* lpLogFont
    );
    operator QFont() const
    {
@@ -953,15 +961,15 @@ public:
    QSize pixmapSize() { return _bitmapSize; }
    QWidget* widget() { return _qwidget; }
    QPixmap* bitmap() { return _bitmap?_bitmap->toQPixmap():NULL; }
-   
+
    BOOL CreateCompatibleDC(
-      CDC* pDC 
+      CDC* pDC
    );
    BOOL DeleteDC( );
    BOOL DrawEdge(
       LPRECT lpRect,
       UINT nEdge,
-      UINT nFlags 
+      UINT nFlags
    );
    BOOL BitBlt(
       int x,
@@ -971,14 +979,14 @@ public:
       CDC* pSrcDC,
       int xSrc,
       int ySrc,
-      DWORD dwRop 
+      DWORD dwRop
    );
    COLORREF GetPixel(
       int x,
-      int y 
+      int y
    ) const;
    COLORREF GetPixel(
-      POINT point 
+      POINT point
    ) const;
    void Draw3dRect( LPCRECT lpRect, COLORREF clrTopLeft, COLORREF clrBottomRight )
    {
@@ -989,48 +997,48 @@ public:
       LPCTSTR lpszString,
       int nCount,
       LPRECT lpRect,
-      UINT nFormat 
+      UINT nFormat
    );
    int DrawText(
       const CString& str,
       LPRECT lpRect,
-      UINT nFormat 
+      UINT nFormat
    );
    void FillSolidRect(
       LPCRECT lpRect,
-      COLORREF clr 
+      COLORREF clr
    );
    void FillSolidRect(
       int x,
       int y,
       int cx,
       int cy,
-      COLORREF clr 
+      COLORREF clr
    );
    int GetDeviceCaps(
-      int nIndex 
+      int nIndex
    ) const;
-   BOOL GradientFill( 
-      TRIVERTEX* pVertices, 
-      ULONG nVertices, 
-      void* pMesh, 
-      ULONG nMeshElements, 
-      DWORD dwMode  
-   );   
-   BOOL LineTo( 
-      int x, 
-      int y  
-   ); 
-   BOOL LineTo( 
-      POINT point  
+   BOOL GradientFill(
+      TRIVERTEX* pVertices,
+      ULONG nVertices,
+      void* pMesh,
+      ULONG nMeshElements,
+      DWORD dwMode
+   );
+   BOOL LineTo(
+      int x,
+      int y
+   );
+   BOOL LineTo(
+      POINT point
    )
    {
       return LineTo(point.x,point.y);
    }
 
-   CPoint MoveTo( 
-      int x, 
-      int y  
+   CPoint MoveTo(
+      int x,
+      int y
    )
    {
       CPoint old = _lineOrg;
@@ -1038,16 +1046,16 @@ public:
       _lineOrg.y = y;
       return old;
    }
-   CPoint MoveTo( 
-      POINT point  
+   CPoint MoveTo(
+      POINT point
    )
    {
       return MoveTo(point.x,point.y);
    }
 
-   CPoint OffsetWindowOrg( 
-      int nWidth, 
-      int nHeight  
+   CPoint OffsetWindowOrg(
+      int nWidth,
+      int nHeight
    )
    {
       CPoint old = _windowOrg;
@@ -1057,26 +1065,26 @@ public:
    }
    BOOL Polygon(
       LPPOINT lpPoints,
-      int nCount 
-   );   
-   
+      int nCount
+   );
+
    HGDIOBJ SelectObject(
       HGDIOBJ obj
    );
    CPen* SelectObject(
-      CPen* pPen 
+      CPen* pPen
    );
    CBrush* SelectObject(
-      CBrush* pBrush 
+      CBrush* pBrush
    );
    virtual CFont* SelectObject(
-      CFont* pFont 
+      CFont* pFont
    );
    CBitmap* SelectObject(
-      CBitmap* pBitmap 
+      CBitmap* pBitmap
    );
    int SelectObject(
-      CRgn* pRgn 
+      CRgn* pRgn
    );
    CGdiObject* SelectObject(
       CGdiObject* pObject
@@ -1084,16 +1092,16 @@ public:
    CObject* SelectObject(
       CObject* pObject
    );
-   COLORREF SetBkColor( 
-      COLORREF crColor  
+   COLORREF SetBkColor(
+      COLORREF crColor
    )
    {
       COLORREF old = _bkColor.red()|(_bkColor.green()<<8)|_bkColor.blue()<<16;
       _bkColor = QColor(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
       return old;
    }
-   int SetBkMode( 
-      int nBkMode  
+   int SetBkMode(
+      int nBkMode
    )
    {
       int old = _bkMode;
@@ -1106,17 +1114,17 @@ public:
       return SetPixel(point.x,point.y,crColor);
    }
 
-   COLORREF SetTextColor( 
-      COLORREF crColor  
+   COLORREF SetTextColor(
+      COLORREF crColor
    )
    {
       COLORREF old = _textColor.red()|(_textColor.green()<<8)|_textColor.blue()<<16;
       _textColor = QColor(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
       return old;
    }
-   virtual CPoint SetViewportOrg( 
-      int x, 
-      int y  
+   virtual CPoint SetViewportOrg(
+      int x,
+      int y
    )
    {
       CPoint old = _viewportOrg;
@@ -1124,15 +1132,15 @@ public:
       _viewportOrg.y = y;
       return old;
    }
-   CPoint SetViewportOrg( 
-      POINT point  
+   CPoint SetViewportOrg(
+      POINT point
    )
    {
       return SetViewportOrg(point.x,point.y);
    }
    CPoint SetWindowOrg(
       int x,
-      int y 
+      int y
    )
    {
       CPoint old = _windowOrg;
@@ -1141,7 +1149,7 @@ public:
       return old;
    }
    CPoint SetWindowOrg(
-      POINT point 
+      POINT point
    )
    {
       return SetWindowOrg(point.x,point.y);
@@ -1151,17 +1159,17 @@ public:
       int x,
       int y,
       LPCTSTR lpszString,
-      int nCount 
+      int nCount
    );
    BOOL TextOut(
       int x,
          int y,
-         const CString& str 
+         const CString& str
    );
-   
+
 public:
    HDC         m_hDC;
-   
+
 private:
    CDC(CDC& orig);
    bool attached;
@@ -1174,7 +1182,7 @@ private:
    CFont*      _font;
    CBitmap*    _bitmap;
    QSize       _bitmapSize;
-   CRgn*       _rgn;   
+   CRgn*       _rgn;
    CGdiObject* _gdiobject;
    CObject*    _object;
    CPoint      _lineOrg;
@@ -1201,31 +1209,31 @@ public:
    virtual void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) {}
    virtual UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const { return 0; }
    virtual void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    ) {}
    virtual int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const { return 0; }
    virtual int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const { return 0; }
-   virtual void CheckDlgButton( 
-      int nIDButton, 
-      UINT nCheck  
+   virtual void CheckDlgButton(
+      int nIDButton,
+      UINT nCheck
    ) {}
-   virtual UINT IsDlgButtonChecked( 
+   virtual UINT IsDlgButtonChecked(
       int nIDButton
    ) const { return 0; }
 };
@@ -1243,27 +1251,27 @@ public:
    virtual ~CWnd();
    operator HWND() { return m_hWnd; }
    void SetOwner(
-      CWnd* pOwnerWnd 
+      CWnd* pOwnerWnd
    );
    CMenu* GetMenu( ) const { return NULL; }
    virtual LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    void SendMessageToDescendants(
       UINT message,
       WPARAM wParam = 0,
       LPARAM lParam = 0,
       BOOL bDeep = TRUE,
-      BOOL bOnlyPerm = FALSE 
+      BOOL bOnlyPerm = FALSE
    );
    BOOL IsWindowVisible( ) const;
    virtual BOOL EnableWindow(
-      BOOL bEnable = TRUE 
+      BOOL bEnable = TRUE
    );
    virtual BOOL PreCreateWindow(
-      CREATESTRUCT& cs 
+      CREATESTRUCT& cs
    ) { return TRUE; }
    enum
    {
@@ -1273,7 +1281,7 @@ public:
    };
    void UpdateDialogControls(
       CCmdTarget* pTarget,
-      BOOL bDisableIfNoHndler 
+      BOOL bDisableIfNoHndler
    );
    void RepositionBars(
       UINT nIDFirst,
@@ -1282,10 +1290,10 @@ public:
       UINT nFlag = reposDefault,
       LPRECT lpRectParam = NULL,
       LPCRECT lpRectClient = NULL,
-      BOOL bStretch = TRUE 
+      BOOL bStretch = TRUE
    );
    void DragAcceptFiles(
-      BOOL bAccept = TRUE 
+      BOOL bAccept = TRUE
    );
    virtual BOOL CreateEx(
       DWORD dwExStyle,
@@ -1298,64 +1306,64 @@ public:
       LPVOID lpParam = NULL
    );
    virtual BOOL PreTranslateMessage(
-      MSG* pMsg 
+      MSG* pMsg
    ) { return FALSE; }
    void MapWindowPoints(
       CWnd* pwndTo,
-      LPRECT lpRect 
+      LPRECT lpRect
    ) const;
    void MapWindowPoints(
       CWnd* pwndTo,
       LPPOINT lpPoint,
-      UINT nCount 
+      UINT nCount
    ) const;
    virtual CScrollBar* GetScrollBarCtrl(
-      int nBar 
+      int nBar
    ) const;
    BOOL SetScrollInfo(
       int nBar,
       LPSCROLLINFO lpScrollInfo,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    void SetScrollRange(
       int nBar,
       int nMinPos,
       int nMaxPos,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    int SetScrollPos(
       int nBar,
       int nPos,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    virtual afx_msg int OnCreate(
-      LPCREATESTRUCT lpCreateStruct 
+      LPCREATESTRUCT lpCreateStruct
    );
    void OnMouseMove(UINT,CPoint) {}
    void OnNcMouseMove(UINT nHitTest, CPoint point) {}
    void OnNcLButtonUp(
       UINT nHitTest,
-      CPoint point 
-   ) {}   
+      CPoint point
+   ) {}
    BOOL OnEraseBkgnd(
-      CDC* pDC 
+      CDC* pDC
    ) { return TRUE; }
    HBRUSH OnCtlColor(
       CDC* pDC,
       CWnd* pWnd,
-      UINT nCtlColor 
+      UINT nCtlColor
    ) { return (HBRUSH)NULL; }
    afx_msg void OnPaint( ) {}
    virtual BOOL OnCmdMsg(
       UINT nID,
       int nCode,
       void* pExtra,
-      AFX_CMDHANDLERINFO* pHandlerInfo 
+      AFX_CMDHANDLERINFO* pHandlerInfo
    ) { return FALSE; }
-   virtual BOOL OnNotify( 
-      WPARAM wParam, 
-      LPARAM lParam, 
-      LRESULT* pResult  
+   virtual BOOL OnNotify(
+      WPARAM wParam,
+      LPARAM lParam,
+      LRESULT* pResult
    ) { return FALSE; }
    void OnLButtonDblClk(UINT,CPoint) {}
    void OnLButtonDown(UINT,CPoint) {}
@@ -1380,17 +1388,17 @@ public:
    void Invalidate(BOOL bErase = TRUE) { /*update();*/ }
    void RedrawWindow(LPCRECT rect=0,CRgn* rgn=0,UINT f=0) { _qt->update(); }
    CWnd* SetFocus() { CWnd* pWnd = focusWnd; _qt->setFocus(); return pWnd; }
-   CWnd* GetFocus() { return focusWnd; } 
+   CWnd* GetFocus() { return focusWnd; }
    void SetCapture(CWnd* p=0) { /* DON'T DO THIS grabMouse(); */ }
    void ReleaseCapture() { /* DON'T DO THIS releaseMouse(); */ }
    CFrameWnd* GetParentFrame( ) const { return m_pFrameWnd; }
    void SetFont(
       CFont* pFont,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    void MoveWindow(
       LPCRECT lpRect,
-         BOOL bRepaint = TRUE 
+         BOOL bRepaint = TRUE
    );
    void MoveWindow(int x,int y,int cx, int cy);
    CDC* GetDC();
@@ -1400,71 +1408,71 @@ public:
    virtual BOOL PostMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    virtual void DoDataExchange(
-      CDataExchange* pDX 
-   ) {}   
+      CDataExchange* pDX
+   ) {}
    int GetWindowTextLength( ) const;
    CWnd* GetParent() { return m_pParentWnd?(CWnd*)m_pParentWnd:(CWnd*)m_pFrameWnd; }
    void SetParent(CWnd* parent) { m_pParentWnd = parent; _qt->setParent(parent->toQWidget()); }
    void GetWindowText(
-      CString& rString 
+      CString& rString
    ) const;
    void SetWindowText(
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    void GetWindowRect(
-      LPRECT lpRect 
+      LPRECT lpRect
    ) const;
    void GetClientRect(
-      LPRECT lpRect 
+      LPRECT lpRect
    ) const;
    CWnd* GetDlgItem(
-      int nID 
+      int nID
    ) const;
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
-   void CheckDlgButton( 
-      int nIDButton, 
-      UINT nCheck  
+   void CheckDlgButton(
+      int nIDButton,
+      UINT nCheck
    );
-   UINT IsDlgButtonChecked( 
+   UINT IsDlgButtonChecked(
       int nIDButton
    ) const;
    BOOL SubclassDlgItem(
       UINT nID,
-      CWnd* pParent 
+      CWnd* pParent
    );
    virtual BOOL DestroyWindow( ) { _qt->close(); return TRUE; }
-   virtual void PostNcDestroy( ) {}  
-   
+   virtual void PostNcDestroy( ) {}
+
    // This method only for Qt glue
    UINT_PTR mfcTimerId(int qtTimerId) { return qtToMfcTimer.value(qtTimerId); }
    // These methods are only to be used in CDocTemplate initialization...
    void privateSetParentFrame(CFrameWnd* pFrameWnd) { m_pFrameWnd = pFrameWnd; }
-   
+
    // MFC-to-Qt conversions
 protected:
    QHash<UINT_PTR,int> mfcToQtTimer;
@@ -1484,7 +1492,7 @@ public:
    QHash<int,QAction*>* mfcToQtActionMap() { return &mfcToQtAction; }
    void subclassWidget(int nID,CWnd* widget);
    void setParent(QWidget *parent) { _qt->setParent(parent); }
-   void setParent(QWidget *parent, Qt::WindowFlags f) { _qt->setParent(parent,f); }   
+   void setParent(QWidget *parent, Qt::WindowFlags f) { _qt->setParent(parent,f); }
    void setGeometry(const QRect & rect) { _qt->setGeometry(rect); }
    void setGeometry(int x, int y, int w, int h) { _qt->setGeometry(x,y,w,h); }
    const QRect &	geometry () const { return _qt->geometry(); }
@@ -1521,36 +1529,36 @@ public:
    void addControlBar(int area,QWidget* bar);
 protected:
    QMenuBar* m_pMenuBar;
-   
+
    // MFC interfaces
 public:
    CFrameWnd(CWnd* parent = 0);
    virtual ~CFrameWnd();
-   CMenu* GetMenu( ) const { return m_pMenu; }   
+   CMenu* GetMenu( ) const { return m_pMenu; }
    void InitialUpdateFrame(
       CDocument* pDoc,
-      BOOL bMakeVisible 
+      BOOL bMakeVisible
    );
    virtual BOOL OnCmdMsg(
       UINT nID,
       int nCode,
       void* pExtra,
-      AFX_CMDHANDLERINFO* pHandlerInfo 
+      AFX_CMDHANDLERINFO* pHandlerInfo
    );
    void OnSize(UINT nType, int cx, int cy);
    virtual void SetMessageText(LPCTSTR fmt,...);
    void SetMessageText(
-      UINT nID 
+      UINT nID
    );
    CView* GetActiveView( ) const { return m_pView; } // Only one view for SDI
-   virtual CDocument* GetActiveDocument( ) { return m_pDocument; }   
+   virtual CDocument* GetActiveDocument( ) { return m_pDocument; }
    virtual void RecalcLayout(
-      BOOL bNotify = TRUE 
-   );   
+      BOOL bNotify = TRUE
+   );
    // These methods are only to be used in CDocTemplate initialization...
    virtual void privateSetActiveView(CView* pView) { m_pView = pView; }
    virtual void privateSetActiveDocument(CDocument* pDocument) { m_pDocument = pDocument; }
-   
+
 protected:
    CMenu* m_pMenu;
    CView* m_pView;
@@ -1578,7 +1586,7 @@ public:
    virtual void DeleteContents() {}
    virtual void SetModifiedFlag(BOOL bModified = 1) {}
    virtual void OnFileSave() {}
-   virtual POSITION GetFirstViewPosition() const; 
+   virtual POSITION GetFirstViewPosition() const;
    virtual CView* GetNextView(POSITION pos) const;
    CDocTemplate* GetDocTemplate() const { return m_pDocTemplate; }
    virtual void SetTitle(CString title ) { m_docTitle = title; }
@@ -1586,7 +1594,7 @@ public:
    // These methods are only to be used in CDocTemplate initialization...
    virtual void privateSetDocTemplate(CDocTemplate* pDocTemplate) { m_pDocTemplate = pDocTemplate; }
    virtual void privateAddView(CView* pView) { _views.append(pView); }
-   
+
 protected:
    CDocTemplate* m_pDocTemplate;
    QList<CView*> _views;
@@ -1599,11 +1607,11 @@ public:
    CView(CWnd* parent);
    virtual ~CView();
    virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {}
-   virtual void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {}  
+   virtual void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {}
    virtual void OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {}
-   virtual void OnSysKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {}  
+   virtual void OnSysKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {}
    CDocument* GetDocument() const { return m_pDocument; }
-   
+
    // These methods are only to be used in CDocTemplate initialization...
    void privateSetDocument(CDocument* pDocument) { m_pDocument = pDocument; }
 
@@ -1617,34 +1625,34 @@ class CMenu : public CCmdTarget
 public:
    QMenu* toQMenu() { return _qtd; }
    HMENU m_hMenu;
-   
+
    // MFC interface
 public:
    CMenu();
    BOOL CreatePopupMenu();
    BOOL LoadMenu(
-      UINT nIDResource 
+      UINT nIDResource
    );
    CMenu* GetSubMenu(
-      int nPos 
+      int nPos
    ) const;
    UINT GetMenuItemCount( ) const;
    BOOL AppendMenu(
       UINT nFlags,
       UINT_PTR nIDNewItem = 0,
-      LPCTSTR lpszNewItem = NULL 
+      LPCTSTR lpszNewItem = NULL
    );
    BOOL SetDefaultItem(
       UINT uItem,
-      BOOL fByPos = FALSE 
+      BOOL fByPos = FALSE
    );
    UINT CheckMenuItem(
       UINT nIDCheckItem,
-      UINT nCheck 
+      UINT nCheck
    );
    UINT EnableMenuItem(
       UINT nIDEnableItem,
-      UINT nEnable 
+      UINT nEnable
    );
    BOOL TrackPopupMenu(
       UINT nFlags,
@@ -1669,29 +1677,29 @@ public:
    bool _inited;
    UINT _id;
 protected:
-   
+
    // MFC interfaces
 public:
    CDialog( );
    CDialog(int dlgID,CWnd* parent);
    virtual ~CDialog();
    void EndDialog(
-      int nResult 
+      int nResult
    );
    virtual void OnOK( ) { _qtd->accept(); }
    virtual void OnCancel( ) { _qtd->reject(); }
    void ShowWindow(int code);
    void SetWindowText(
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    virtual BOOL Create(
       UINT nIDTemplate,
-      CWnd* pParentWnd = NULL 
+      CWnd* pParentWnd = NULL
          );
    virtual BOOL OnInitDialog() { return TRUE; }
    virtual INT_PTR DoModal();
-   void MapDialogRect( 
-      LPRECT lpRect  
+   void MapDialogRect(
+      LPRECT lpRect
    ) const;
 };
 
@@ -1700,10 +1708,10 @@ class CCommonDialog : public CDialog
    // Qt interfaces
 public:
 protected:
-   
+
 public:
    explicit CCommonDialog(
-      CWnd* pParentWnd 
+      CWnd* pParentWnd
    );
    virtual ~CCommonDialog();
 };
@@ -1718,7 +1726,7 @@ public:
    QStringList selectedFiles() const { return _qtd->selectedFiles(); }
 protected:
    QFileDialog* _qtd;
-   
+
    // MFC interfaces
 public:
    explicit CFileDialog(
@@ -1738,7 +1746,7 @@ public:
    CString GetPathName( ) const;
    POSITION GetStartPosition( ) const;
    CString GetNextPathName(
-      POSITION& pos 
+      POSITION& pos
    ) const;
    OPENFILENAME m_ofn;
    LPOPENFILENAME m_pOFN;
@@ -1759,35 +1767,35 @@ protected:
    Qt::Orientation _orient;
 signals:
    void actionTriggered(int action);
-   
+
    // MFC interfaces
 public:
    CScrollBar(CWnd* parent = 0);
    virtual ~CScrollBar();
    BOOL SetScrollInfo(
       LPSCROLLINFO lpScrollInfo,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    virtual BOOL Create(
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    int SetScrollPos(
       int nPos,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    void SetScrollRange(
       int nMinPos,
       int nMaxPos,
-      BOOL bRedraw = TRUE 
+      BOOL bRedraw = TRUE
    );
    void ShowScrollBar(
-      BOOL bShow = TRUE 
+      BOOL bShow = TRUE
    );
    BOOL EnableScrollBar(
-      UINT nArrowFlags = ESB_ENABLE_BOTH 
+      UINT nArrowFlags = ESB_ENABLE_BOTH
    );
 };
 
@@ -1812,7 +1820,7 @@ protected:
    DWORD _dwStyle;
 signals:
    void textChanged(QString);
-   
+
    // MFC interfaces
 public:
    CEdit(CWnd* parent = 0);
@@ -1821,55 +1829,55 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    void SetSel(
       DWORD dwSelection,
-      BOOL bNoScroll = FALSE 
+      BOOL bNoScroll = FALSE
    );
    void SetSel(
       int nStartChar,
       int nEndChar,
-      BOOL bNoScroll = FALSE 
+      BOOL bNoScroll = FALSE
    );
    void ReplaceSel(
       LPCTSTR lpszNewText,
-         BOOL bCanUndo = FALSE 
+         BOOL bCanUndo = FALSE
    );
 #if UNICODE
    void ReplaceSel(
       LPCSTR lpszNewText,
-         BOOL bCanUndo = FALSE 
+         BOOL bCanUndo = FALSE
    );
 #endif
    BOOL EnableWindow(BOOL bEnable);
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
 };
 
@@ -1894,39 +1902,39 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    HBITMAP SetBitmap(
-      HBITMAP hBitmap 
+      HBITMAP hBitmap
    );
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
-   void CheckDlgButton( 
-      int nIDButton, 
-      UINT nCheck  
+   void CheckDlgButton(
+      int nIDButton,
+      UINT nCheck
    );
-   UINT IsDlgButtonChecked( 
+   UINT IsDlgButtonChecked(
       int nIDButton
    ) const;
 };
@@ -1949,7 +1957,7 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
 };
 
@@ -1975,7 +1983,7 @@ protected:
    QSlider* _qtd;
 signals:
    void valueChanged(int);
-      
+
    // MFC interfaces
 public:
    CSliderCtrl(CWnd* parent = 0);
@@ -1984,22 +1992,22 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    void SetRange(
       short nLower,
-      short nUpper 
-   );   
+      short nUpper
+   );
    void SetRangeMax(
       int nMax,
-      BOOL bRedraw = FALSE 
-   );   
+      BOOL bRedraw = FALSE
+   );
    void SetPos(
-      int nPos 
+      int nPos
    );
    int GetPos( ) const;
    void SetTicFreq(
-      int nFreq 
+      int nFreq
    );
 };
 
@@ -2012,17 +2020,17 @@ public:
    void setInvertedAppearance(bool inverted) { _qtd->setInvertedAppearance(inverted); }
 protected:
    QProgressBar* _qtd;
-      
+
    // MFC interfaces
 public:
    CProgressCtrl(CWnd* parent = 0);
    virtual ~CProgressCtrl();
    void SetRange(
       short nLower,
-      short nUpper 
-   );   
+      short nUpper
+   );
    void SetPos(
-      int nPos 
+      int nPos
    );
    int GetPos( ) const;
 };
@@ -2048,7 +2056,7 @@ protected:
    CEdit* _buddy;
 signals:
    void valueChanged(int);
-   
+
    // MFC interfaces
 public:
    CSpinButtonCtrl(CWnd* parent = 0);
@@ -2057,16 +2065,16 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    int SetPos(
-      int nPos 
+      int nPos
    );
-   int GetPos( ) const; 
+   int GetPos( ) const;
    void SetRange(
       short nLower,
-      short nUpper 
-   );   
+      short nUpper
+   );
 };
 
 class CComboBox : public CWnd
@@ -2078,7 +2086,7 @@ protected:
    QComboBox* _qtd;
 signals:
    void currentIndexChanged(int index);
-   
+
    // MFC interfaces
 public:
    CComboBox(CWnd* parent = 0);
@@ -2087,54 +2095,54 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    void ResetContent();
    int AddString(
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    void SetCurSel(int sel);
    int GetCurSel( ) const;
    int GetLBText(
       int nIndex,
-      LPTSTR lpszText 
+      LPTSTR lpszText
    ) const;
 #if UNICODE
    int GetLBText(
       int nIndex,
-      char* lpszText 
+      char* lpszText
    ) const;
 #endif
    void GetLBText(
       int nIndex,
-      CString& rString 
+      CString& rString
    ) const;
    int SelectString(
       int nStartAfter,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
 };
 
@@ -2155,30 +2163,30 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID = 0xffff 
+      UINT nID = 0xffff
    );
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
 };
 
@@ -2201,35 +2209,35 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    void SetDlgItemInt(
       int nID,
       UINT nValue,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    );
    UINT GetDlgItemInt(
       int nID,
       BOOL* lpTrans = NULL,
-      BOOL bSigned = TRUE 
+      BOOL bSigned = TRUE
    ) const;
    void SetDlgItemText(
       int nID,
-      LPCTSTR lpszString 
+      LPCTSTR lpszString
    );
    int GetDlgItemText(
       int nID,
-      CString& rString 
+      CString& rString
    ) const;
    int GetDlgItemText(
       int nID,
       LPTSTR lpStr,
-      int nMaxCount 
+      int nMaxCount
    ) const;
 };
 
 class CTabCtrl : public CWnd
-{  
+{
    Q_OBJECT
    // Qt interfaces
 public:
@@ -2237,18 +2245,18 @@ protected:
    QTabWidget* _qtd;
 signals:
    void currentChanged(int);
-   
+
    // MFC interfaces
 public:
    CTabCtrl(CWnd* parent = 0);
    virtual ~CTabCtrl();
    LONG InsertItem(
      int nItem,
-     LPCTSTR lpszItem 
+     LPCTSTR lpszItem
    );
    BOOL DeleteAllItems( );
    int SetCurSel(
-     int nItem 
+     int nItem
    );
    int GetCurSel( ) const;
 };
@@ -2262,7 +2270,7 @@ public:
 #define LVIS_FOCUSED  2
 
 // CP: No idea...need to find these in the windows headers.
-#define LVIF_STATE 100 
+#define LVIF_STATE 100
 #define LVNI_SELECTED 200
 
 #define LVS_ICON	0
@@ -2347,7 +2355,7 @@ signals:
    void itemSelectionChanged();
    void cellClicked(int row, int column);
    void cellDoubleClicked(int row, int column);
-   
+
    // MFC interfaces
 public:
    CListCtrl(CWnd* parent = 0);
@@ -2356,113 +2364,113 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    CImageList* SetImageList(
       CImageList* pImageList,
-      int nImageListType 
+      int nImageListType
    );
    LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    DWORD SetExtendedStyle(
-      DWORD dwNewStyle 
+      DWORD dwNewStyle
    );
    int FindItem(
       LVFINDINFO* pFindInfo,
-      int nStart = -1 
+      int nStart = -1
    ) const;
    BOOL SetBkColor(
-      COLORREF cr 
+      COLORREF cr
    );
    BOOL SetTextBkColor(
-      COLORREF cr 
+      COLORREF cr
    );
    BOOL SetTextColor(
-      COLORREF cr 
+      COLORREF cr
    );
    BOOL DeleteAllItems( );
    BOOL DeleteItem(
-      int nItem 
+      int nItem
    );
    int InsertColumn(
       int nCol,
       LPCTSTR lpszColumnHeading,
       int nFormat = LVCFMT_LEFT,
       int nWidth = -1,
-      int nSubItem = -1 
+      int nSubItem = -1
    );
    UINT GetSelectedCount( ) const;
    int GetSelectionMark( );
    int GetNextItem(
       int nItem,
-      int nFlags 
+      int nFlags
    ) const;
    int GetItemText(
       int nItem,
       int nSubItem,
       LPTSTR lpszText,
-      int nLen 
+      int nLen
    ) const;
    CString GetItemText(
       int nItem,
-      int nSubItem 
+      int nSubItem
    ) const;
 #if UNICODE
    int GetItemText(
       int nItem,
       int nSubItem,
       char* lpszText,
-      int nLen 
+      int nLen
    ) const;
 #endif
    int InsertItem(
       int nItem,
       LPCTSTR lpszItem,
-      int nImage 
+      int nImage
    );
    int InsertItem(
       int nItem,
-      LPCTSTR lpszItem 
+      LPCTSTR lpszItem
    );
    int SetSelectionMark(
-      int iIndex 
+      int iIndex
    );
    BOOL SetCheck(
       int nItem,
-      BOOL fCheck = TRUE 
+      BOOL fCheck = TRUE
    );
    BOOL GetCheck(
-      int nItem 
+      int nItem
    ) const;
    BOOL SetItemText(
       int nItem,
       int nSubItem,
-      LPCTSTR lpszText 
+      LPCTSTR lpszText
    );
    BOOL SetItemText(
       int nItem,
       int nSubItem,
-      char* lpszText 
+      char* lpszText
    );
    BOOL SetItemState(
       int nItem,
       UINT nState,
-      UINT nMask 
+      UINT nMask
    );
    int GetItemCount( ) const;
-   DWORD_PTR GetItemData( 
-      int nItem  
+   DWORD_PTR GetItemData(
+      int nItem
    ) const;
    BOOL SetItemData(
       int nItem,
-         DWORD_PTR dwData 
+         DWORD_PTR dwData
    );
    BOOL EnsureVisible(
       int nItem,
-      BOOL bPartialOK 
+      BOOL bPartialOK
    );
 protected:
    CImageList* m_pImageList;
@@ -2484,7 +2492,7 @@ signals:
    void itemSelectionChanged();
    void itemClicked(QListWidgetItem* lwi);
    void itemDoubleClicked(QListWidgetItem* lwi);
-   
+
    // MFC interfaces
 public:
    CListBox(CWnd* parent = 0);
@@ -2493,12 +2501,12 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
 };
 
 class CCheckListBox : public CListBox
-{   
+{
    // MFC interfaces
 public:
    CCheckListBox(CWnd* parent = 0);
@@ -2566,7 +2574,7 @@ signals:
    void itemSelectionChanged();
    void itemClicked(QTreeWidgetItem* item, int column);
    void itemDoubleClicked(QTreeWidgetItem* item, int column);
-   
+
    // MFC interfaces
 public:
    CTreeCtrl(CWnd* parent = 0);
@@ -2575,44 +2583,44 @@ public:
       DWORD dwStyle,
       const RECT& rect,
       CWnd* pParentWnd,
-      UINT nID 
+      UINT nID
    );
    HTREEITEM InsertItem(
       LPCTSTR lpszItem,
       HTREEITEM hParent = TVI_ROOT,
-      HTREEITEM hInsertAfter = TVI_LAST 
+      HTREEITEM hInsertAfter = TVI_LAST
    );
    BOOL SortChildren(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    );
    HTREEITEM GetRootItem( ) const;
    HTREEITEM GetNextItem(
       HTREEITEM hItem,
-      UINT nCode 
+      UINT nCode
    ) const;
    HTREEITEM GetSelectedItem( ) const;
    BOOL ItemHasChildren(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    ) const;
    DWORD_PTR GetItemData(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    ) const;
    BOOL SetItemData(
       HTREEITEM hItem,
-      DWORD_PTR dwData 
-   );   
+      DWORD_PTR dwData
+   );
    CString GetItemText(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    ) const;
    BOOL DeleteItem(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    );
    BOOL Expand(
       HTREEITEM hItem,
-      UINT nCode 
+      UINT nCode
    );
    HTREEITEM GetParentItem(
-      HTREEITEM hItem 
+      HTREEITEM hItem
    ) const;
 };
 
@@ -2625,16 +2633,16 @@ public:
    BOOL CreateThread(
       DWORD dwCreateFlags = 0,
       UINT nStackSize = 0,
-      LPSECURITY_ATTRIBUTES lpSecurityAttrs = NULL 
+      LPSECURITY_ATTRIBUTES lpSecurityAttrs = NULL
    );
    DWORD ResumeThread( );
    BOOL SetThreadPriority(
-      int nPriority 
+      int nPriority
    );
    BOOL PostThreadMessage(
       UINT message ,
       WPARAM wParam,
-      LPARAM lParam 
+      LPARAM lParam
          );
    virtual BOOL InitInstance() { return FALSE; }
    virtual BOOL ExitInstance() { return FALSE; }
@@ -2653,12 +2661,12 @@ public:
    CDocTemplate(UINT f,CDocument* pDoc,CFrameWnd* pFrameWnd,CView* pView);
    virtual CDocument* OpenDocumentFile(
       LPCTSTR lpszPathName,
-      BOOL bMakeVisible = TRUE 
+      BOOL bMakeVisible = TRUE
    ) = 0;
    virtual void InitialUpdateFrame(
       CFrameWnd* pFrame,
       CDocument* pDoc,
-      BOOL bMakeVisible = TRUE 
+      BOOL bMakeVisible = TRUE
    );
    enum DocStringIndex
    {
@@ -2668,15 +2676,15 @@ public:
       filterName,
       filterExt,
       regFileTypeId,
-      regFileTypeName      
+      regFileTypeName
    };
    virtual BOOL GetDocString(
       CString& rString,
-      enum DocStringIndex index 
+      enum DocStringIndex index
    ) const;
    virtual POSITION GetFirstDocPosition( ) const = 0;
    virtual CDocument* GetNextDoc(
-      POSITION& rPos 
+      POSITION& rPos
    ) const = 0;
    CDocument* m_pDoc;
    CView*     m_pView;
@@ -2689,11 +2697,11 @@ public:
    CSingleDocTemplate(UINT f,CDocument* pDoc,CFrameWnd* pFrameWnd,CView* pView);
    virtual CDocument* OpenDocumentFile(
       LPCTSTR lpszPathName,
-      BOOL bMakeVisible = TRUE 
+      BOOL bMakeVisible = TRUE
    );
    virtual POSITION GetFirstDocPosition( ) const;
    virtual CDocument* GetNextDoc(
-      POSITION& rPos 
+      POSITION& rPos
    ) const;
 };
 
@@ -2701,13 +2709,13 @@ class CCommandLineInfo : public CObject
 {
 public:
    CCommandLineInfo( );
-   virtual void ParseParam( 
-      const TCHAR* pszParam,  
-      BOOL bFlag, 
+   virtual void ParseParam(
+      const TCHAR* pszParam,
+      BOOL bFlag,
       BOOL bLast
    );
    enum
-   {   
+   {
       FileNew,
       FileOpen,
       FilePrint,
@@ -2717,7 +2725,7 @@ public:
       AppUnregister,
       RestartByRestartManager,
       FileNothing = -1
-   }; 
+   };
    BOOL m_bRunAutomated;
    BOOL m_bRunEmbedded;
    BOOL m_bShowSplash;
@@ -2735,28 +2743,28 @@ class CWinApp : public CWinThread
 public:
    CWinApp() : m_pMainWnd(NULL) {}
    void ParseCommandLine(
-      CCommandLineInfo& rCmdInfo 
+      CCommandLineInfo& rCmdInfo
    );
-   BOOL ProcessShellCommand( 
-      CCommandLineInfo& rCmdInfo  
+   BOOL ProcessShellCommand(
+      CCommandLineInfo& rCmdInfo
    );
    void AddDocTemplate(CDocTemplate* pDocTemplate);
    POSITION GetFirstDocTemplatePosition( ) const;
    CDocTemplate* GetNextDocTemplate(
-      POSITION& pos 
+      POSITION& pos
    ) const;
    virtual CDocument* OpenDocumentFile(
-      LPCTSTR lpszFileName 
+      LPCTSTR lpszFileName
    );
    virtual BOOL PreTranslateMessage(
-      MSG* pMsg 
+      MSG* pMsg
    );
    HICON LoadIcon(
-      UINT nIDResource 
+      UINT nIDResource
    ) const;
    virtual BOOL InitInstance();
-   HCURSOR LoadStandardCursor( 
-      LPCTSTR lpszCursorName  
+   HCURSOR LoadStandardCursor(
+      LPCTSTR lpszCursorName
    ) const;
    virtual CWnd * GetMainWnd( ) { return m_pMainWnd; }
    afx_msg void OnFileNew( );
@@ -2764,8 +2772,8 @@ public:
 public:
    CFrameWnd* m_pMainWnd;
    // Qt interfaces
-   QMainWindow* qtMainWindow;   
-   
+   QMainWindow* qtMainWindow;
+
 protected:
    QList<CDocTemplate*> _docTemplates;
 };
@@ -2777,7 +2785,7 @@ protected:
 #define CBRS_LEFT     0x0004 // Control bar is at the left of the frame window.
 #define CBRS_RIGHT    0x0008 //  Control bar is at the right of the frame window.
 #define CBRS_FLYBY    0x0010
-#define CBRS_TOOLTIPS 0x0020 
+#define CBRS_TOOLTIPS 0x0020
 #define CBRS_SIZE_DYNAMIC 0x2000
 
 class CControlBar : public CWnd
@@ -2785,7 +2793,7 @@ class CControlBar : public CWnd
 public:
    virtual CSize CalcFixedLayout(
       BOOL bStretch,
-      BOOL bHorz 
+      BOOL bHorz
    );
 };
 
@@ -2832,11 +2840,11 @@ typedef struct {
   UINT     cxIdeal;
   LPARAM   lParam;
   UINT     cxHeader;
-#endif 
+#endif
 #if (_WIN32_WINNT >= 0x0600)
   RECT     rcChevronLocation;
   UINT     uChevronState;
-#endif 
+#endif
 } REBARBANDINFO, *LPREBARBANDINFO;
 
 #define RBS_TOOLTIPS 256
@@ -2888,18 +2896,18 @@ public slots:
    void toolBarAction_triggered();
 signals:
    void toolBarAction_triggered(int id);
-   
+
    // MFC interfaces
 public:
-   virtual BOOL Create( 
-      DWORD dwStyle, 
-      const RECT& rect, 
-      CWnd* pParentWnd, 
-      UINT nID  
+   virtual BOOL Create(
+      DWORD dwStyle,
+      const RECT& rect,
+      CWnd* pParentWnd,
+      UINT nID
    );
-   BOOL InsertBand( 
-      UINT uIndex, 
-      REBARBANDINFO* prbbi  
+   BOOL InsertBand(
+      UINT uIndex,
+      REBARBANDINFO* prbbi
    );
 };
 
@@ -2912,7 +2920,7 @@ public:
       CWnd* pParentWnd,
       DWORD dwCtrlStyle = RBS_BANDBORDERS,
       DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_TOP,
-      UINT nID = AFX_IDW_REBAR 
+      UINT nID = AFX_IDW_REBAR
    );
    CReBarCtrl& GetReBarCtrl() const { return *m_pReBarCtrl; }
 protected:
@@ -2933,7 +2941,7 @@ public slots:
    void toolBarAction_triggered();
 signals:
    void toolBarAction_triggered(int id);
-   
+
    // MFC interfaces
 public:
    CToolBar(CWnd* parent = 0);
@@ -2953,10 +2961,10 @@ public:
    LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    BOOL LoadToolBar(
-      UINT nIDResource 
+      UINT nIDResource
    );
 };
 
@@ -2974,16 +2982,16 @@ public:
       CWnd* pParentWnd,
       UINT nIDTemplate,
       UINT nStyle,
-      UINT nID 
+      UINT nID
    );
    LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    virtual CSize CalcFixedLayout(
       BOOL bStretch,
-      BOOL bHorz 
+      BOOL bHorz
    );
 public:
    CSize m_sizeDefault;
@@ -2996,7 +3004,7 @@ protected:
    QStatusBar* _qtd;
    QHash<int,CStatic*> _panes;
    UINT _dwStyle;
-   
+
    // MFC interfaces
 public:
    CStatusBar(CWnd* parent = 0);
@@ -3004,22 +3012,22 @@ public:
    virtual BOOL Create(
       CWnd* pParentWnd,
       DWORD dwStyle = WS_CHILD | WS_VISIBLE | CBRS_BOTTOM,
-      UINT nID = AFX_IDW_STATUS_BAR 
+      UINT nID = AFX_IDW_STATUS_BAR
    );
    LRESULT SendMessage(
       UINT message,
       WPARAM wParam = 0,
-      LPARAM lParam = 0 
+      LPARAM lParam = 0
    );
    BOOL SetIndicators(
       const UINT* lpIDArray,
-      int nIDCount 
+      int nIDCount
    );
    BOOL SetPaneText(
       int nIndex,
       LPCTSTR lpszNewText,
-      BOOL bUpdate = TRUE 
-   );   
+      BOOL bUpdate = TRUE
+   );
 };
 
 class CCmdUI
@@ -3027,16 +3035,16 @@ class CCmdUI
 public:
    void ContinueRouting( ) {}
    virtual void Enable(
-      BOOL bOn = TRUE 
+      BOOL bOn = TRUE
    ) { m_pOther->EnableWindow(bOn); }
    virtual void SetCheck(
-      int nCheck = 1 
+      int nCheck = 1
    ) { m_pMenu->CheckMenuItem(m_nID,nCheck); }
    virtual void SetRadio(
-      BOOL bOn = TRUE 
+      BOOL bOn = TRUE
    ) { m_pOther->CheckDlgButton(m_nID,bOn); }
    virtual void SetText(
-      LPCTSTR lpszText 
+      LPCTSTR lpszText
    ) { m_pOther->SetDlgItemText(m_nID,lpszText); }
    UINT m_nID;
    UINT m_nIndex;
@@ -3045,8 +3053,8 @@ public:
    CMenu* m_pSubMenu;
 };
 
-template < class TYPE, class ARG_TYPE = const TYPE& > 
-class CArray : 
+template < class TYPE, class ARG_TYPE = const TYPE& >
+class CArray :
    public CObject
 {
 public:
@@ -3054,15 +3062,15 @@ public:
    {
       return _qlist.count();
    }
-   
-   TYPE& operator[]( 
-      INT_PTR nIndex  
-   ) 
+
+   TYPE& operator[](
+      INT_PTR nIndex
+   )
    {
       return _qlist[nIndex];
    }
-   const TYPE& operator[]( 
-      INT_PTR nIndex  
+   const TYPE& operator[](
+      INT_PTR nIndex
    ) const
    {
       return _qlist.at(nIndex);
@@ -3075,7 +3083,7 @@ public:
    {
    }
    INT_PTR Add(
-      ARG_TYPE newElement 
+      ARG_TYPE newElement
    )
    {
       _qlist.append(newElement);
@@ -3086,12 +3094,12 @@ protected:
 };
 
 template< class KEY, class ARG_KEY, class VALUE, class ARG_VALUE >
-class CMap : 
+class CMap :
       public CObject
 {
 public:
    VALUE& operator[](
-         ARG_KEY key 
+         ARG_KEY key
    )
    {
       return _qmap[key];
@@ -3106,7 +3114,7 @@ class CFileFind
 public:
    virtual BOOL FindFile(
       LPCTSTR pstrName = NULL,
-      DWORD dwUnused = 0 
+      DWORD dwUnused = 0
    );
    virtual BOOL FindNextFile( );
    virtual CString GetFileName( ) const;
@@ -3137,18 +3145,18 @@ public:
       int cy,
       UINT nFlags,
       int nInitial,
-      int nGrow 
+      int nGrow
    );
    int Add(
       CBitmap* pbmImage,
-      CBitmap* pbmMask 
+      CBitmap* pbmMask
    );
    int Add(
       CBitmap* pbmImage,
-      COLORREF crMask 
+      COLORREF crMask
    );
    int Add(
-      HICON hIcon 
+      HICON hIcon
    );
 protected:
    QList<CBitmap*> _images;
@@ -3160,12 +3168,12 @@ public:
    explicit CPropertySheet(
       UINT nIDCaption,
       CWnd* pParentWnd = NULL,
-      UINT iSelectPage = 0 
+      UINT iSelectPage = 0
    );
    explicit CPropertySheet(
       LPCTSTR pszCaption,
       CWnd* pParentWnd = NULL,
-      UINT iSelectPage = 0 
+      UINT iSelectPage = 0
    );
    CPropertySheet(
       UINT nIDCaption,
@@ -3173,7 +3181,7 @@ public:
       UINT iSelectPage,
       HBITMAP hbmWatermark,
       HPALETTE hpalWatermark = NULL,
-      HBITMAP hbmHeader = NULL 
+      HBITMAP hbmHeader = NULL
    );
    CPropertySheet(
       LPCTSTR pszCaption,
@@ -3181,46 +3189,20 @@ public:
       UINT iSelectPage,
       HBITMAP hbmWatermark,
       HPALETTE hpalWatermark = NULL,
-      HBITMAP hbmHeader = NULL 
+      HBITMAP hbmHeader = NULL
    );
 };
-
-typedef struct {
-//  DWORD           dwSize;
-//  DWORD           dwFlags;
-//  HINSTANCE       hInstance;
-//  union {
-//    LPCSTR         pszTemplate;
-//    LPCDLGTEMPLATE pResource;
-//  };
-//  union {
-//    HICON  hIcon;
-//    LPCSTR pszIcon;
-//  };
-//  LPCSTR          pszTitle;
-//  DLGPROC         pfnDlgProc;
-//  LPARAM          lParam;
-//  LPFNPSPCALLBACK pfnCallback;
-//  UINT            *pcRefParent;
-//#if (_WIN32_IE >= 0x0500)
-//  LPCTSTR         pszHeaderTitle;
-//  LPCTSTR         pszHeaderSubTitle;
-//#endif 
-//#if (_WIN32_WINNT >= 0x0501)
-//  HANDLE          hActCtx;
-//#endif 
-} PROPSHEETPAGE, *LPPROPSHEETPAGE;
 
 class CPropertyPage : public CDialog
 {
 public:
-   explicit CPropertyPage( 
-      UINT nIDTemplate, 
-      UINT nIDCaption = 0, 
-      DWORD dwSize = sizeof(PROPSHEETPAGE) 
-   ); 
+   explicit CPropertyPage(
+      UINT nIDTemplate,
+      UINT nIDCaption = 0,
+      DWORD dwSize = sizeof(PROPSHEETPAGE)
+   );
    void SetModified(
-      BOOL bChanged = TRUE 
+      BOOL bChanged = TRUE
    );
    virtual BOOL OnApply( );
 };
@@ -3248,7 +3230,6 @@ int StretchDIBits(
 CWinApp* AfxGetApp();
 CFrameWnd* AfxGetMainWnd();
 
-DWORD WINAPI GetCurrentThreadId(void);
 
 HGDIOBJ GetStockObject(
    int fnObject

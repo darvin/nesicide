@@ -11,20 +11,16 @@
 
 extern CWinApp* ptrToTheApp;
 
-CWinApp* AfxGetApp() 
-{ 
-   return ptrToTheApp; 
-}
-
-CFrameWnd* AfxGetMainWnd() 
-{ 
-   return ptrToTheApp->m_pMainWnd; 
-}
-
-DWORD WINAPI GetCurrentThreadId(void)
+CWinApp* AfxGetApp()
 {
-   return (DWORD)QThread::currentThreadId();
+   return ptrToTheApp;
 }
+
+CFrameWnd* AfxGetMainWnd()
+{
+   return ptrToTheApp->m_pMainWnd;
+}
+
 
 CBrush nullBrush;
 
@@ -69,7 +65,7 @@ CMenu* qtMfcMenuResource(int id)
 int AfxMessageBox(
    LPCTSTR lpszText,
    UINT nType,
-   UINT nIDHelp 
+   UINT nIDHelp
 )
 {
 #if UNICODE
@@ -151,7 +147,7 @@ BOOL PathRemoveFileSpec(
 #endif
    for ( ; len > 0; len-- )
    {
-      if ( (pszPath[len] == '/') || 
+      if ( (pszPath[len] == '/') ||
            (pszPath[len] == '\\') )
       {
          pszPath[len] = 0;
@@ -171,7 +167,7 @@ BOOL PathAppend(
 #else
    len = strlen(pszPath);
 #endif
-   if ( (pszPath[len-1] == '/') || 
+   if ( (pszPath[len-1] == '/') ||
         (pszPath[len-1] == '\\') )
    {
 #if UNICODE
@@ -313,7 +309,7 @@ HANDLE WINAPI SetClipboardData(
 )
 {
    QSharedMemory* pMem = (QSharedMemory*)hMem;
-   QByteArray value = QString::number((int)pMem,16).toAscii();
+   QByteArray value = QString::number((intptr_t)pMem,16).toAscii();
    gpClipboardMimeData->setData("application/x-qt-windows-mime;value=\"FamiTracker\"",value);
    QApplication::clipboard()->setMimeData(gpClipboardMimeData);
    return hMem;
@@ -324,7 +320,7 @@ BOOL WINAPI IsClipboardFormatAvailable(
 )
 {
    QStringList formats = QApplication::clipboard()->mimeData()->formats();
-   
+
    if ( formats.count() && formats.contains("application/x-qt-windows-mime;value=\"FamiTracker\"") )
       return TRUE;
    return FALSE;
@@ -353,7 +349,7 @@ LPVOID WINAPI GlobalLock(
 )
 {
    QSharedMemory* pMem = (QSharedMemory*)hMem;
-   
+
    pMem->lock();
    return pMem->data();
 }
@@ -363,7 +359,7 @@ BOOL WINAPI GlobalUnlock(
 )
 {
    QSharedMemory* pMem = (QSharedMemory*)hMem;
-   
+
    return pMem->unlock();
 }
 
@@ -372,7 +368,7 @@ SIZE_T WINAPI GlobalSize(
 )
 {
    QSharedMemory* pMem = (QSharedMemory*)hMem;
-   
+
    return pMem->size();
 }
 
@@ -495,8 +491,8 @@ BOOL CString::LoadString( UINT nID )
    _qstr.append(QString::fromWCharArray(qtMfcStringResource(nID).GetString()));
 #else
    _qstr.append(QString::fromAscii(qtMfcStringResource(nID).GetString()));
-#endif   
-   return TRUE;   
+#endif
+   return TRUE;
 }
 
 void CString::UpdateScratch()
@@ -709,9 +705,9 @@ CString::operator const TCHAR*() const
    return GetString();
 }
 
-void CString::Empty() 
-{ 
-   _qstr.clear(); 
+void CString::Empty()
+{
+   _qstr.clear();
 }
 
 LPCTSTR CString::GetString() const
@@ -828,8 +824,8 @@ TCHAR CString::GetAt( int nIndex ) const
 }
 
 CStringA::CStringA(CString str)
-{ 
-   _qstr = str.GetString(); 
+{
+   _qstr = str.GetString();
 }
 
 CStringA::operator char*() const
@@ -849,18 +845,18 @@ void CStringArray::RemoveAll( )
 }
 
 CString CStringArray::GetAt(int idx) const
-{ 
-   return _qlist.at(idx); 
+{
+   return _qlist.at(idx);
 }
 
 void CStringArray::SetAt(int idx, CString str)
-{ 
-   _qlist.replace(idx,str); 
+{
+   _qlist.replace(idx,str);
 }
 
-INT_PTR CStringArray::GetCount( ) const 
-{ 
-   return _qlist.count(); 
+INT_PTR CStringArray::GetCount( ) const
+{
+   return _qlist.count();
 }
 
 CString CStringArray::operator []( INT_PTR nIndex )
@@ -888,7 +884,7 @@ CFile::CFile()
 
 CFile::CFile(
    LPCTSTR lpszFileName,
-   UINT nOpenFlags 
+   UINT nOpenFlags
 )
 {
    QFile::OpenMode flags;
@@ -949,7 +945,7 @@ UINT CFile::Read(
 
 ULONGLONG CFile::Seek(
    LONGLONG lOff,
-   UINT nFrom 
+   UINT nFrom
 )
 {
    if ( _qfile.isOpen() )
@@ -999,11 +995,11 @@ CRect::CRect( )
    right = 0;
 }
 
-CRect::CRect( 
-   int l, 
-   int t, 
-   int r, 
-   int b  
+CRect::CRect(
+   int l,
+   int t,
+   int r,
+   int b
 )
 {
    top = t;
@@ -1012,8 +1008,8 @@ CRect::CRect(
    right = r;
 }
 
-CRect::CRect( 
-   const RECT& srcRect  
+CRect::CRect(
+   const RECT& srcRect
 )
 {
    top = srcRect.top;
@@ -1022,8 +1018,8 @@ CRect::CRect(
    right = srcRect.right;
 }
 
-CRect::CRect( 
-   LPCRECT lpSrcRect  
+CRect::CRect(
+   LPCRECT lpSrcRect
 )
 {
    top = lpSrcRect->top;
@@ -1032,9 +1028,9 @@ CRect::CRect(
    right = lpSrcRect->right;
 }
 
-CRect::CRect( 
-   POINT point, 
-   SIZE size  
+CRect::CRect(
+   POINT point,
+   SIZE size
 )
 {
    top = point.y;
@@ -1043,9 +1039,9 @@ CRect::CRect(
    right = point.x+size.cx;
 }
 
-CRect::CRect( 
-   POINT topLeft, 
-   POINT bottomRight  
+CRect::CRect(
+   POINT topLeft,
+   POINT bottomRight
 )
 {
    top = topLeft.y;
@@ -1074,7 +1070,7 @@ void CRect::MoveToY(
 
 void CRect::MoveToXY(
    int x,
-   int y 
+   int y
 )
 {
    int width = Width();
@@ -1086,7 +1082,7 @@ void CRect::MoveToXY(
 }
 
 void CRect::MoveToXY(
-   POINT point 
+   POINT point
 )
 {
    int width = Width();
@@ -1097,9 +1093,9 @@ void CRect::MoveToXY(
    top = point.y;
 }
 
-void CRect::DeflateRect( 
-   int x, 
-   int y  
+void CRect::DeflateRect(
+   int x,
+   int y
 )
 {
    left += x;
@@ -1108,8 +1104,8 @@ void CRect::DeflateRect(
    bottom -= y;
 }
 
-void CRect::DeflateRect( 
-   SIZE size  
+void CRect::DeflateRect(
+   SIZE size
 )
 {
    left += size.cx;
@@ -1118,8 +1114,8 @@ void CRect::DeflateRect(
    bottom -= size.cy;
 }
 
-void CRect::DeflateRect( 
-   LPCRECT lpRect  
+void CRect::DeflateRect(
+   LPCRECT lpRect
 )
 {
    left += lpRect->left;
@@ -1128,11 +1124,11 @@ void CRect::DeflateRect(
    bottom -= lpRect->bottom;
 }
 
-void CRect::DeflateRect( 
-   int l, 
-   int t, 
-   int r, 
-   int b  
+void CRect::DeflateRect(
+   int l,
+   int t,
+   int r,
+   int b
 )
 {
    left += l;
@@ -1141,9 +1137,9 @@ void CRect::DeflateRect(
    bottom -= b;
 }
 
-void CRect::InflateRect( 
-   int x, 
-   int y  
+void CRect::InflateRect(
+   int x,
+   int y
 )
 {
    left -= x;
@@ -1152,8 +1148,8 @@ void CRect::InflateRect(
    bottom += y;
 }
 
-void CRect::InflateRect( 
-   SIZE size  
+void CRect::InflateRect(
+   SIZE size
 )
 {
    left -= size.cx;
@@ -1162,8 +1158,8 @@ void CRect::InflateRect(
    bottom += size.cy;
 }
 
-void CRect::InflateRect( 
-   LPCRECT lpRect  
+void CRect::InflateRect(
+   LPCRECT lpRect
 )
 {
    left -= lpRect->left;
@@ -1172,11 +1168,11 @@ void CRect::InflateRect(
    bottom += lpRect->bottom;
 }
 
-void CRect::InflateRect( 
-   int l, 
-   int t, 
-   int r, 
-   int b  
+void CRect::InflateRect(
+   int l,
+   int t,
+   int r,
+   int b
 )
 {
    left -= l;
@@ -1196,15 +1192,15 @@ CPen::CPen()
 CPen::CPen(
    int nPenStyle,
    int nWidth,
-   COLORREF crColor 
+   COLORREF crColor
 )
 {
    QColor color(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
    _qpen.setWidth(nWidth);
    _qpen.setColor(color);
    switch ( nPenStyle )
-   {   
-   case PS_SOLID:      
+   {
+   case PS_SOLID:
       _qpen.setStyle(Qt::SolidLine);
       break;
    case PS_DASH:
@@ -1232,12 +1228,12 @@ CPen::CPen(
    int nWidth,
    const LOGBRUSH* pLogBrush,
    int nStyleCount,
-   const DWORD* lpStyle 
+   const DWORD* lpStyle
 )
 {
    QBrush brush;
    QColor color(GetRValue(pLogBrush->lbColor),GetGValue(pLogBrush->lbColor),GetBValue(pLogBrush->lbColor));
-   
+
    switch ( pLogBrush->lbStyle )
    {
    case BS_SOLID:
@@ -1250,8 +1246,8 @@ CPen::CPen(
    _qpen.setBrush(brush);
    _qpen.setWidth(nWidth);
    switch ( nPenStyle )
-   {   
-   case PS_SOLID:      
+   {
+   case PS_SOLID:
       _qpen.setStyle(Qt::SolidLine);
       break;
    case PS_DASH:
@@ -1278,15 +1274,15 @@ CPen::CPen(
 BOOL CPen::CreatePen(
    int nPenStyle,
    int nWidth,
-   COLORREF crColor 
+   COLORREF crColor
 )
 {
    QColor color(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
    _qpen.setWidth(nWidth);
    _qpen.setColor(color);
    switch ( nPenStyle )
-   {   
-   case PS_SOLID:      
+   {
+   case PS_SOLID:
       _qpen.setStyle(Qt::SolidLine);
       break;
    case PS_DASH:
@@ -1317,7 +1313,7 @@ CBrush::CBrush( )
 }
 
 CBrush::CBrush(
-   COLORREF crColor 
+   COLORREF crColor
 )
 {
    QColor color(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
@@ -1327,7 +1323,7 @@ CBrush::CBrush(
 
 CBrush::CBrush(
    int nIndex,
-   COLORREF crColor 
+   COLORREF crColor
 )
 {
    QColor color(GetRValue(crColor),GetGValue(crColor),GetBValue(crColor));
@@ -1356,7 +1352,7 @@ CBrush::CBrush(
 }
 
 CBrush::CBrush(
-   CBitmap* pBitmap 
+   CBitmap* pBitmap
 )
 {
    QPixmap pixmap = (QPixmap)*pBitmap->toQPixmap();
@@ -1377,7 +1373,7 @@ BOOL CFont::CreateFont(
    BYTE nClipPrecision,
    BYTE nQuality,
    BYTE nPitchAndFamily,
-   LPCTSTR lpszFacename 
+   LPCTSTR lpszFacename
 )
 {
 #if UNICODE
@@ -1395,7 +1391,7 @@ BOOL CFont::CreateFont(
 }
 
 BOOL CFont::CreateFontIndirect(
-   const LOGFONT* lpLogFont 
+   const LOGFONT* lpLogFont
 )
 {
 #if UNICODE
@@ -1430,7 +1426,7 @@ CBitmap::~CBitmap()
 BOOL CBitmap::CreateCompatibleBitmap(
    CDC* pDC,
    int nWidth,
-   int nHeight 
+   int nHeight
 )
 {
    if ( _owned )
@@ -1445,7 +1441,7 @@ BOOL CBitmap::CreateBitmap(
    int nHeight,
    UINT nPlanes,
    UINT nBitcount,
-   const void* lpBits 
+   const void* lpBits
 )
 {
    if ( _owned )
@@ -1458,7 +1454,7 @@ BOOL CBitmap::CreateBitmap(
 
 CSize CBitmap::SetBitmapDimension(
    int nWidth,
-   int nHeight 
+   int nHeight
 )
 {
    CSize origSize;
@@ -1476,7 +1472,7 @@ CSize CBitmap::GetBitmapDimension( ) const
 }
 
 BOOL CBitmap::LoadBitmap(
-   UINT nIDResource 
+   UINT nIDResource
 )
 {
    BOOL result = FALSE;
@@ -1503,7 +1499,7 @@ CDC::CDC()
    _font = NULL;
    _bitmap = NULL;
    _bitmapSize = QSize(-1,-1);
-   _rgn = NULL;   
+   _rgn = NULL;
    _gdiobject = NULL;
    _object = NULL;
    _lineOrg.x = 0;
@@ -1528,7 +1524,7 @@ CDC::CDC(CWnd* parent)
    _font = NULL;
    _bitmap = NULL;
    _bitmapSize = QSize(-1,-1);
-   _rgn = NULL;   
+   _rgn = NULL;
    _gdiobject = NULL;
    _object = NULL;
    _lineOrg.x = 0;
@@ -1540,7 +1536,7 @@ CDC::CDC(CWnd* parent)
    _windowOrg.y = 0;
    attached = false;
    _doFlush = false;
-   
+
    attach(parent->toQWidget());
 }
 
@@ -1558,7 +1554,7 @@ void CDC::flush()
       p.begin(_qwidget);
       p.drawPixmap(0,0,*_qpixmap);
       p.end();
-   }   
+   }
 }
 
 void CDC::attach()
@@ -1581,7 +1577,7 @@ void CDC::attach(QWidget* parent)
 }
 
 void CDC::detach()
-{   
+{
    if ( attached )
    {
       if ( _qpainter )
@@ -1597,7 +1593,7 @@ void CDC::detach()
 }
 
 BOOL CDC::CreateCompatibleDC(
-   CDC* pDC 
+   CDC* pDC
 )
 {
    if ( pDC->widget() )
@@ -1635,7 +1631,7 @@ HGDIOBJ CDC::SelectObject(
 }
 
 CPen* CDC::SelectObject(
-   CPen* pPen 
+   CPen* pPen
 )
 {
    CPen* temp = _pen;
@@ -1646,18 +1642,18 @@ CPen* CDC::SelectObject(
 }
 
 CBrush* CDC::SelectObject(
-   CBrush* pBrush 
+   CBrush* pBrush
 )
 {
    CBrush* temp = _brush;
    _brush = pBrush;
-   if ( _brush )      
+   if ( _brush )
       _qpainter->setBrush((QBrush)(*_brush));
    return temp;
 }
 
 CFont* CDC::SelectObject(
-   CFont* pFont 
+   CFont* pFont
 )
 {
    CFont* temp = _font;
@@ -1668,7 +1664,7 @@ CFont* CDC::SelectObject(
 }
 
 CBitmap* CDC::SelectObject(
-   CBitmap* pBitmap 
+   CBitmap* pBitmap
 )
 {
    CBitmap* temp = _bitmap;
@@ -1683,7 +1679,7 @@ CBitmap* CDC::SelectObject(
       _bitmapSize = QSize(-1,-1);
    }
    return temp;
-}   
+}
 
 CGdiObject* CDC::SelectObject(
    CGdiObject* pObject
@@ -1692,7 +1688,7 @@ CGdiObject* CDC::SelectObject(
    CGdiObject* temp = _gdiobject;
    _gdiobject = pObject;
    return temp;
-}   
+}
 
 CObject* CDC::SelectObject(
    CObject* pObject
@@ -1701,10 +1697,10 @@ CObject* CDC::SelectObject(
    CObject* temp = _object;
    _object = pObject;
    return temp;
-}   
+}
 
 int CDC::GetDeviceCaps(
-   int nIndex 
+   int nIndex
 ) const
 {
    switch ( nIndex )
@@ -1721,7 +1717,7 @@ int CDC::GetDeviceCaps(
 
 COLORREF CDC::GetPixel(
    int x,
-   int y 
+   int y
 ) const
 {
    COLORREF ref = 0xbadf00d;
@@ -1730,7 +1726,7 @@ COLORREF CDC::GetPixel(
 }
 
 COLORREF CDC::GetPixel(
-   POINT point 
+   POINT point
 ) const
 {
    qDebug("GetPixel not supported yet.");
@@ -1746,7 +1742,7 @@ BOOL CDC::BitBlt(
    CDC* pSrcDC,
    int xSrc,
    int ySrc,
-   DWORD dwRop 
+   DWORD dwRop
 )
 {
    QPixmap* pixmap = pSrcDC->pixmap();
@@ -1785,7 +1781,7 @@ int StretchDIBits(
 BOOL CDC::DrawEdge(
    LPRECT lpRect,
    UINT nEdge,
-   UINT nFlags 
+   UINT nFlags
 )
 {
    QRect rect(lpRect->left,lpRect->top,lpRect->right-lpRect->left,lpRect->bottom-lpRect->top);
@@ -1812,7 +1808,7 @@ void CDC::Draw3dRect( int x, int y, int cx, int cy, COLORREF clrTopLeft, COLORRE
 int CDC::DrawText(
    const CString& str,
    LPRECT lpRect,
-   UINT nFormat 
+   UINT nFormat
 )
 {
    QRect rect(lpRect->left,lpRect->top,lpRect->right-lpRect->left,lpRect->bottom-lpRect->top);
@@ -1825,14 +1821,14 @@ int CDC::DrawText(
    _qpainter->setPen(QPen(_textColor));
 //   _qpainter->setFont((QFont)*_font);
    _qpainter->drawText(rect,qstr.toLatin1().constData());
-   return _tcslen((LPCTSTR)str);   
+   return _tcslen((LPCTSTR)str);
    _qpainter->setPen(origPen);
 }
 int CDC::DrawText(
    LPCTSTR lpszString,
    int nCount,
    LPRECT lpRect,
-   UINT nFormat 
+   UINT nFormat
 )
 {
    QRect rect(lpRect->left,lpRect->top,lpRect->right-lpRect->left,lpRect->bottom-lpRect->top);
@@ -1846,12 +1842,12 @@ int CDC::DrawText(
 //   _qpainter->setFont((QFont)*_font);
    _qpainter->drawText(rect,qstr.left(nCount).toLatin1().constData());
    _qpainter->setPen(origPen);
-   return 0; // CP: should be text height  
+   return 0; // CP: should be text height
 }
 
 void CDC::FillSolidRect(
    LPCRECT lpRect,
-   COLORREF clr 
+   COLORREF clr
 )
 {
    QRect rect(lpRect->left,lpRect->top,lpRect->right-lpRect->left,lpRect->bottom-lpRect->top);
@@ -1865,7 +1861,7 @@ void CDC::FillSolidRect(
    int y,
    int cx,
    int cy,
-   COLORREF clr 
+   COLORREF clr
 )
 {
    QRect rect(x,y,cx,cy);
@@ -1874,18 +1870,18 @@ void CDC::FillSolidRect(
    _qpainter->fillRect(rect,color);
 }
 
-BOOL CDC::GradientFill( 
-   TRIVERTEX* pVertices, 
-   ULONG nVertices, 
-   void* pMesh, 
-   ULONG nMeshElements, 
-   DWORD dwMode  
+BOOL CDC::GradientFill(
+   TRIVERTEX* pVertices,
+   ULONG nVertices,
+   void* pMesh,
+   ULONG nMeshElements,
+   DWORD dwMode
 )
 {
    QRect rect;
    GRADIENT_RECT* grect = (GRADIENT_RECT*)pMesh;
    ULONG el;
-   
+
    for ( el = 0; el < nMeshElements; el++ )
    {
       rect = QRect(QPoint(pVertices[grect[el].UpperLeft].x,pVertices[grect[el].UpperLeft].y),QPoint(pVertices[grect[el].LowerRight].x-1,pVertices[grect[el].LowerRight].y-1));
@@ -1898,15 +1894,15 @@ BOOL CDC::GradientFill(
       gradient.setColorAt(0,QColor(pVertices[grect[el].UpperLeft].Red>>8,pVertices[grect[el].UpperLeft].Green>>8,pVertices[grect[el].UpperLeft].Blue>>8,pVertices[grect[el].UpperLeft].Alpha>>8));
       gradient.setColorAt(1,QColor(pVertices[grect[el].LowerRight].Red>>8,pVertices[grect[el].LowerRight].Green>>8,pVertices[grect[el].LowerRight].Blue>>8,pVertices[grect[el].LowerRight].Alpha>>8));
       QBrush brush(gradient);
-   
+
       _qpainter->fillRect(rect,brush);
    }
    return TRUE;
 }
 
-BOOL CDC::LineTo( 
-   int x, 
-   int y  
+BOOL CDC::LineTo(
+   int x,
+   int y
 )
 {
    _qpainter->drawLine(_lineOrg.x,_lineOrg.y,x,y);
@@ -1917,7 +1913,7 @@ BOOL CDC::LineTo(
 
 BOOL CDC::Polygon(
    LPPOINT lpPoints,
-   int nCount 
+   int nCount
 )
 {
    int pt;
@@ -1935,7 +1931,7 @@ BOOL CDC::Polygon(
 }
 
 int CDC::SelectObject(
-   CRgn* pRgn 
+   CRgn* pRgn
 )
 {
    return TRUE;
@@ -1950,7 +1946,7 @@ BOOL CDC::TextOut(
    int x,
    int y,
    LPCTSTR lpszString,
-   int nCount 
+   int nCount
 )
 {
 #if UNICODE
@@ -1973,7 +1969,7 @@ BOOL CDC::TextOut(
 BOOL CDC::TextOut(
    int x,
       int y,
-      const CString& str 
+      const CString& str
 )
 {
    QFontMetrics fontMetrics((QFont)*_font);
@@ -1993,14 +1989,14 @@ CComboBox::CComboBox(CWnd *parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QComboBox(parent->toQWidget());
 
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QComboBox*>(_qt);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(currentIndexChanged(int)),this,SIGNAL(currentIndexChanged(int)));
 }
@@ -2017,18 +2013,18 @@ BOOL CComboBox::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
 
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,_qtd->sizeHint().height());
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
    QFontMetrics fm(_qtd->font());
-   
+
    _qtd->setMaxVisibleItems((rect.bottom-rect.top)/fm.height());
-   
+
    return TRUE;
 }
 
@@ -2038,7 +2034,7 @@ void CComboBox::ResetContent()
 }
 
 int CComboBox::AddString(
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
    _qtd->blockSignals(true); // Don't cause CbnSelchange yet...
@@ -2048,7 +2044,7 @@ int CComboBox::AddString(
    _qtd->addItem(lpszString);
 #endif
    _qtd->blockSignals(false); // Don't cause CbnSelchange yet...
-   
+
    return _qtd->count()-1;
 }
 
@@ -2064,7 +2060,7 @@ int CComboBox::GetCurSel( ) const
 
 int CComboBox::GetLBText(
    int nIndex,
-   LPTSTR lpszText 
+   LPTSTR lpszText
 ) const
 {
    QString lbText = _qtd->itemText(nIndex);
@@ -2082,7 +2078,7 @@ int CComboBox::GetLBText(
 #if UNICODE
 int CComboBox::GetLBText(
    int nIndex,
-   char* lpszText 
+   char* lpszText
 ) const
 {
    QString lbText = _qtd->itemText(nIndex);
@@ -2095,7 +2091,7 @@ int CComboBox::GetLBText(
 
 void CComboBox::GetLBText(
    int nIndex,
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qtd->itemText(nIndex);
@@ -2103,7 +2099,7 @@ void CComboBox::GetLBText(
 
 int CComboBox::SelectString(
    int nStartAfter,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
    int item;
@@ -2128,7 +2124,7 @@ int CComboBox::SelectString(
 void CComboBox::SetDlgItemInt(
    int nID,
    UINT nValue,
-   BOOL bSigned 
+   BOOL bSigned
 )
 {
    qDebug("CComboBox::SetDlgItemInt not supported");
@@ -2145,7 +2141,7 @@ UINT CComboBox::GetDlgItemInt(
 
 void CComboBox::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
    qDebug("CComboBox::SetDlgItemText not supported");
@@ -2153,7 +2149,7 @@ void CComboBox::SetDlgItemText(
 
 int CComboBox::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qtd->currentText();
@@ -2163,14 +2159,14 @@ int CComboBox::GetDlgItemText(
 int CComboBox::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
 #if UNICODE
    wcsncpy(lpStr,(LPWSTR)_qtd->currentText().unicode(),nMaxCount);
 #else
    strncpy(lpStr,_qtd->currentText().toAscii().constData(),nMaxCount);
-#endif   
+#endif
    return _qtd->currentText().length();
 }
 
@@ -2179,17 +2175,17 @@ CListBox::CListBox(CWnd* parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QListWidget(parent->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QListWidget*>(_qt);
-      
+
    _qtd->setFont(QFont("MS Shell Dlg",8));
    _qtd->setEditTriggers(QAbstractItemView::NoEditTriggers);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(itemSelectionChanged()),this,SIGNAL(itemSelectionChanged()));
    QObject::connect(_qtd,SIGNAL(itemClicked(QListWidgetItem*)),this,SIGNAL(itemClicked(QListWidgetItem*)));
@@ -2208,7 +2204,7 @@ BOOL CListBox::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
@@ -2248,15 +2244,15 @@ CListCtrl::~CListCtrl()
    _qt = NULL;
 }
 
-QModelIndex CListCtrl::currentIndex () const 
-{ 
+QModelIndex CListCtrl::currentIndex () const
+{
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
-      return _qtd_table->currentIndex(); 
+      return _qtd_table->currentIndex();
    }
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
-      return _qtd_list->currentIndex(); 
+      return _qtd_list->currentIndex();
    }
 }
 
@@ -2264,32 +2260,32 @@ BOOL CListCtrl::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
    _dwStyle = dwStyle;
-   
+
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( (dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       if ( pParentWnd )
          _qt = new QTableWidget(pParentWnd->toQWidget());
       else
-         _qt = new QTableWidget;      
-      
+         _qt = new QTableWidget;
+
       // Downcast to save having to do it all over the place...
       _qtd_table = dynamic_cast<QTableWidget*>(_qt);
-         
+
       _qtd_table->setFont(QFont("MS Shell Dlg",8));
       _qtd_table->horizontalHeader()->setStretchLastSection(true);
       _qtd_table->verticalHeader()->hide();
       _qtd_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-      
+
       // Pass-through signals
       QObject::connect(_qtd_table,SIGNAL(itemSelectionChanged()),this,SIGNAL(itemSelectionChanged()));
       QObject::connect(_qtd_table,SIGNAL(cellClicked(int,int)),this,SIGNAL(cellClicked(int,int)));
@@ -2316,7 +2312,7 @@ BOOL CListCtrl::Create(
          _qtd_table->horizontalHeader()->setSortIndicatorShown(false);
       }
       _qtd_table->horizontalHeader()->setStretchLastSection(true);
-      
+
       _qtd_table->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
       _qtd_table->setVisible(dwStyle&WS_VISIBLE);
    }
@@ -2325,14 +2321,14 @@ BOOL CListCtrl::Create(
       if ( pParentWnd )
          _qt = new QListWidget(pParentWnd->toQWidget());
       else
-         _qt = new QListWidget;      
-      
+         _qt = new QListWidget;
+
       // Downcast to save having to do it all over the place...
       _qtd_list = dynamic_cast<QListWidget*>(_qt);
-         
+
       _qtd_list->setFont(QFont("MS Shell Dlg",8));
       _qtd_list->setEditTriggers(QAbstractItemView::NoEditTriggers);
-      
+
       // Pass-through signals
       QObject::connect(_qtd_list,SIGNAL(itemSelectionChanged()),this,SIGNAL(itemSelectionChanged()));
 
@@ -2348,17 +2344,17 @@ BOOL CListCtrl::Create(
    //   {
    //      _qtd_list->setSortingEnabled(true);
    //   }
-      
+
       _qtd_list->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
       _qtd_list->setVisible(dwStyle&WS_VISIBLE);
-   }   
+   }
 
    return TRUE;
 }
 
 CImageList* CListCtrl::SetImageList(
    CImageList* pImageList,
-   int nImageListType 
+   int nImageListType
 )
 {
    CImageList* oldList = m_pImageList;
@@ -2369,7 +2365,7 @@ CImageList* CListCtrl::SetImageList(
 LRESULT CListCtrl::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -2381,7 +2377,7 @@ LRESULT CListCtrl::SendMessage(
          {
             switch ( lParam )
             {
-            case LVS_EX_FULLROWSELECT:            
+            case LVS_EX_FULLROWSELECT:
                _qtd_table->setSelectionMode(QAbstractItemView::SingleSelection);
                _qtd_table->setSelectionBehavior(QAbstractItemView::SelectRows);
                break;
@@ -2402,7 +2398,7 @@ LRESULT CListCtrl::SendMessage(
          {
             switch ( lParam )
             {
-            case LVS_EX_FULLROWSELECT:            
+            case LVS_EX_FULLROWSELECT:
                _qtd_list->setSelectionMode(QAbstractItemView::SingleSelection);
                _qtd_list->setSelectionBehavior(QAbstractItemView::SelectRows);
                break;
@@ -2418,7 +2414,7 @@ LRESULT CListCtrl::SendMessage(
 }
 
 DWORD CListCtrl::SetExtendedStyle(
-   DWORD dwNewStyle 
+   DWORD dwNewStyle
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -2472,7 +2468,7 @@ int CListCtrl::GetSelectionMark( )
 
 int CListCtrl::GetNextItem(
    int nItem,
-   int nFlags 
+   int nFlags
 ) const
 {
    QList<QTableWidgetItem*> twis;
@@ -2483,7 +2479,7 @@ int CListCtrl::GetNextItem(
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twis = _qtd_table->selectedItems();
-      
+
       switch ( nFlags )
       {
       case LVNI_SELECTED:
@@ -2506,7 +2502,7 @@ int CListCtrl::GetNextItem(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwis = _qtd_list->selectedItems();
-      
+
       switch ( nFlags )
       {
       case LVNI_SELECTED:
@@ -2531,7 +2527,7 @@ int CListCtrl::GetNextItem(
 
 CString CListCtrl::GetItemText(
    int nItem,
-   int nSubItem 
+   int nSubItem
 ) const
 {
    QTableWidgetItem* twi;
@@ -2541,7 +2537,7 @@ CString CListCtrl::GetItemText(
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,nSubItem);
-      
+
       if ( twi )
       {
          str = twi->text();
@@ -2550,7 +2546,7 @@ CString CListCtrl::GetItemText(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( lwi )
       {
          str = lwi->text();
@@ -2563,7 +2559,7 @@ int CListCtrl::GetItemText(
    int nItem,
    int nSubItem,
    LPTSTR lpszText,
-   int nLen 
+   int nLen
 ) const
 {
    QTableWidgetItem* twi;
@@ -2573,7 +2569,7 @@ int CListCtrl::GetItemText(
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,nSubItem);
-      
+
       if ( twi )
       {
 #if UNICODE
@@ -2588,7 +2584,7 @@ int CListCtrl::GetItemText(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( lwi )
       {
 #if UNICODE
@@ -2608,17 +2604,17 @@ int CListCtrl::GetItemText(
    int nItem,
    int nSubItem,
    char* lpszText,
-   int nLen 
+   int nLen
 ) const
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
    int length = 0;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,nSubItem);
-      
+
       if ( twi )
       {
          strcpy(lpszText,twi->text().toAscii().constData());
@@ -2628,7 +2624,7 @@ int CListCtrl::GetItemText(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem,nSubItem);
-      
+
       if ( lwi )
       {
          strcpy(lpszText,lwi->text().toAscii().constData());
@@ -2646,7 +2642,7 @@ int CListCtrl::InsertColumn(
    int nWidth,
    int nSubItem
 )
-{   
+{
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       _qtd_table->insertColumn(nCol);
@@ -2659,13 +2655,13 @@ int CListCtrl::InsertColumn(
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       QTableWidgetItem* twi = new QTableWidgetItem;
-   
+
 #if UNICODE
       twi->setText(QString::fromWCharArray(lpszColumnHeading));
 #else
       twi->setText(lpszColumnHeading);
 #endif
-      
+
       _qtd_table->setColumnWidth(nCol,nWidth);
       _qtd_table->setHorizontalHeaderItem(nCol,twi);
       return _qtd_table->columnCount()-1;
@@ -2673,13 +2669,13 @@ int CListCtrl::InsertColumn(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
 //      QListWidgetItem* lwi = new QListWidgetItem;
-   
+
 //#if UNICODE
 //      lwi->setText(QString::fromWCharArray(lpszColumnHeading));
 //#else
 //      lwi->setText(lpszColumnHeading);
 //#endif
-      
+
 //      _qtd_list->setColumnWidth(nCol,nWidth);
 //      return _qtd_list->columnCount()-1;
    }
@@ -2694,13 +2690,13 @@ int CListCtrl::InsertItem(
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       QTableWidgetItem* twi = new QTableWidgetItem;
-      
+
 #if UNICODE
       twi->setText(QString::fromWCharArray(lpszItem));
 #else
       twi->setText(lpszItem);
 #endif
-      
+
       _qtd_table->blockSignals(true);
       _qtd_table->insertRow(nItem);
       _qtd_table->setItem(nItem,0,twi);
@@ -2712,13 +2708,13 @@ int CListCtrl::InsertItem(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       QListWidgetItem* lwi = new QListWidgetItem;
-      
+
 #if UNICODE
       lwi->setText(QString::fromWCharArray(lpszItem));
 #else
       lwi->setText(lpszItem);
 #endif
-      
+
       _qtd_list->blockSignals(true);
       _qtd_list->insertItem(nItem,lwi);
       _qtd_list->blockSignals(false);
@@ -2730,19 +2726,19 @@ int CListCtrl::InsertItem(
 int CListCtrl::InsertItem(
    int nItem,
    LPCTSTR lpszItem,
-   int nImage 
+   int nImage
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       QTableWidgetItem* twi = new QTableWidgetItem;
-      
+
 #if UNICODE
       twi->setText(QString::fromWCharArray(lpszItem));
 #else
       twi->setText(lpszItem);
 #endif
-      
+
       _qtd_table->blockSignals(true);
       _qtd_table->insertRow(nItem);
       _qtd_table->setItem(nItem,0,twi);
@@ -2754,13 +2750,13 @@ int CListCtrl::InsertItem(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       QListWidgetItem* lwi = new QListWidgetItem;
-      
+
 #if UNICODE
       lwi->setText(QString::fromWCharArray(lpszItem));
 #else
       lwi->setText(lpszItem);
 #endif
-      
+
       _qtd_list->blockSignals(true);
       _qtd_list->insertItem(nItem,lwi);
       _qtd_list->blockSignals(false);
@@ -2770,7 +2766,7 @@ int CListCtrl::InsertItem(
 }
 
 int CListCtrl::SetSelectionMark(
-   int iIndex 
+   int iIndex
 )
 {
    int selection;
@@ -2792,55 +2788,55 @@ BOOL CListCtrl::SetCheck(
    BOOL fCheck
 )
 {
-   QTableWidgetItem* twi;  
-   QListWidgetItem* lwi;  
+   QTableWidgetItem* twi;
+   QListWidgetItem* lwi;
    bool add = false;
 
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,0);
-      
+
       if ( !twi )
       {
          add = true;
          twi = new QTableWidgetItem;
       }
-      
+
       twi->setCheckState(fCheck?Qt::Checked:Qt::Unchecked);
-   
+
       if ( add )
          _qtd_table->setItem(nItem,0,twi);
    }
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( !twi )
       {
          add = true;
          lwi = new QListWidgetItem;
       }
-      
+
       lwi->setCheckState(fCheck?Qt::Checked:Qt::Unchecked);
-   
+
       if ( add )
          _qtd_list->insertItem(nItem,lwi);
    }
-   
+
    return TRUE;
 }
 
 BOOL CListCtrl::GetCheck(
-   int nItem 
+   int nItem
 ) const
 {
-   QTableWidgetItem* twi;  
-   QListWidgetItem* lwi;  
-   
+   QTableWidgetItem* twi;
+   QListWidgetItem* lwi;
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,0);
-      
+
       if ( !twi )
       {
          return twi->checkState()==Qt::Checked;
@@ -2849,7 +2845,7 @@ BOOL CListCtrl::GetCheck(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( !lwi )
       {
          return lwi->checkState()==Qt::Checked;
@@ -2861,40 +2857,40 @@ BOOL CListCtrl::GetCheck(
 BOOL CListCtrl::SetItemText(
    int nItem,
    int nSubItem,
-   char* lpszText 
+   char* lpszText
 )
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
    bool add = false;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,nSubItem);
-      
+
       if ( !twi )
       {
          add = true;
          twi = new QTableWidgetItem;
       }
-   
+
       twi->setText(lpszText);
-      
+
       if ( add )
          _qtd_table->setItem(nItem,nSubItem,twi);
    }
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( !lwi )
       {
          add = true;
          lwi = new QListWidgetItem;
       }
-   
+
       lwi->setText(lpszText);
-      
+
       if ( add )
          _qtd_list->insertItem(nItem,lwi);
    }
@@ -2905,63 +2901,63 @@ BOOL CListCtrl::SetItemText(
 BOOL CListCtrl::SetItemText(
    int nItem,
    int nSubItem,
-   LPCTSTR lpszText 
+   LPCTSTR lpszText
 )
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
    bool add = false;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,nSubItem);
-      
+
       if ( !twi )
       {
          add = true;
          twi = new QTableWidgetItem;
       }
-      
+
 #if UNICODE
       twi->setText(QString::fromWCharArray(lpszText));
 #else
       twi->setText(lpszText);
 #endif
-         
+
       if ( add )
          _qtd_table->setItem(nItem,nSubItem,twi);
    }
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( !lwi )
       {
          add = true;
          lwi = new QListWidgetItem;
       }
-      
+
 #if UNICODE
       lwi->setText(QString::fromWCharArray(lpszText));
 #else
       lwi->setText(lpszText);
 #endif
-         
+
       if ( add )
          _qtd_list->insertItem(nItem,lwi);
    }
-   
+
    return TRUE;
 }
 
 BOOL CListCtrl::SetItemState(
    int nItem,
    UINT nState,
-   UINT nMask 
+   UINT nMask
 )
 {
    nState &= nMask;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       if ( nState&LVIS_SELECTED )
@@ -2984,7 +2980,7 @@ BOOL CListCtrl::SetItemState(
          _qtd_list->setCurrentRow(nItem);
       }
    }
-   
+
    return TRUE;
 }
 
@@ -3001,10 +2997,10 @@ int CListCtrl::FindItem(
       flags |= Qt::MatchExactly;
    if ( pFindInfo->flags&LVFI_WRAP )
       flags |= Qt::MatchWrap;
-   
+
    QList<QTableWidgetItem*> twis;
    QList<QListWidgetItem*> lwis;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
 #if UNICODE
@@ -3012,7 +3008,7 @@ int CListCtrl::FindItem(
 #else
       twis = _qtd_table->findItems(pFindInfo->psz,flags);
 #endif
-      
+
       if ( twis.count() )
       {
          foreach ( QTableWidgetItem* twi, twis )
@@ -3032,7 +3028,7 @@ int CListCtrl::FindItem(
 #else
       lwis = _qtd_list->findItems(pFindInfo->psz,flags);
 #endif
-      
+
       if ( lwis.count() )
       {
          foreach ( QListWidgetItem* lwi, lwis )
@@ -3049,7 +3045,7 @@ int CListCtrl::FindItem(
 }
 
 BOOL CListCtrl::SetBkColor(
-   COLORREF cr 
+   COLORREF cr
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -3064,7 +3060,7 @@ BOOL CListCtrl::SetBkColor(
 }
 
 BOOL CListCtrl::SetTextBkColor(
-   COLORREF cr 
+   COLORREF cr
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -3079,7 +3075,7 @@ BOOL CListCtrl::SetTextBkColor(
 }
 
 BOOL CListCtrl::SetTextColor(
-   COLORREF cr 
+   COLORREF cr
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -3107,7 +3103,7 @@ BOOL CListCtrl::DeleteAllItems()
 }
 
 BOOL CListCtrl::DeleteItem(
-   int nItem 
+   int nItem
 )
 {
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
@@ -3142,17 +3138,17 @@ int CListCtrl::GetItemCount( ) const
    }
 }
 
-DWORD_PTR CListCtrl::GetItemData( 
-   int nItem  
+DWORD_PTR CListCtrl::GetItemData(
+   int nItem
 ) const
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,0);
-      
+
       if ( twi )
       {
          return twi->data(Qt::UserRole).toInt();
@@ -3161,7 +3157,7 @@ DWORD_PTR CListCtrl::GetItemData(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( lwi )
       {
          return lwi->data(Qt::UserRole).toInt();
@@ -3171,30 +3167,30 @@ DWORD_PTR CListCtrl::GetItemData(
 
 BOOL CListCtrl::SetItemData(
    int nItem,
-      DWORD_PTR dwData 
+      DWORD_PTR dwData
 )
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,0);
-      
+
       if ( twi )
       {
          twi->setData(Qt::UserRole,QVariant((int)dwData));
-         return TRUE; 
+         return TRUE;
       }
    }
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( lwi )
       {
          lwi->setData(Qt::UserRole,QVariant((int)dwData));
-         return TRUE; 
+         return TRUE;
       }
    }
    return TRUE;
@@ -3202,16 +3198,16 @@ BOOL CListCtrl::SetItemData(
 
 BOOL CListCtrl::EnsureVisible(
    int nItem,
-   BOOL bPartialOK 
+   BOOL bPartialOK
 )
 {
    QTableWidgetItem* twi;
    QListWidgetItem* lwi;
-   
+
    if ( (_dwStyle&LVS_TYPEMASK) == LVS_REPORT )
    {
       twi = _qtd_table->item(nItem,0);
-      
+
       if ( twi )
       {
          _qtd_table->scrollToItem(twi);
@@ -3221,7 +3217,7 @@ BOOL CListCtrl::EnsureVisible(
    else if ( (_dwStyle&LVS_TYPEMASK) == LVS_LIST )
    {
       lwi = _qtd_list->item(nItem);
-      
+
       if ( lwi )
       {
          _qtd_list->scrollToItem(lwi);
@@ -3236,18 +3232,18 @@ CTreeCtrl::CTreeCtrl(CWnd* parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QTreeWidget(parent->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QTreeWidget*>(_qt);
-      
+
    _qtd->setFont(QFont("MS Shell Dlg",8));
    _qtd->setEditTriggers(QAbstractItemView::NoEditTriggers);
    _qtd->setHeaderHidden(true);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(itemSelectionChanged()),this,SIGNAL(itemSelectionChanged()));
    QObject::connect(_qtd,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SIGNAL(itemClicked(QTreeWidgetItem*,int)));
@@ -3266,7 +3262,7 @@ BOOL CTreeCtrl::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
@@ -3279,7 +3275,7 @@ BOOL CTreeCtrl::Create(
    {
       _qtd->setLineWidth(1);
    }
-   
+
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
 
@@ -3289,7 +3285,7 @@ BOOL CTreeCtrl::Create(
 HTREEITEM CTreeCtrl::InsertItem(
    LPCTSTR lpszItem,
    HTREEITEM hParent,
-   HTREEITEM hInsertAfter 
+   HTREEITEM hInsertAfter
 )
 {
    QTreeWidgetItem* twi = new QTreeWidgetItem;
@@ -3305,7 +3301,7 @@ HTREEITEM CTreeCtrl::InsertItem(
       qDebug("CTreeCtrl::InsertItem !TVI_LAST not supported.");
    }
    if ( hParent == TVI_ROOT )
-   {      
+   {
       _qtd->insertTopLevelItem(_qtd->topLevelItemCount(),twi);
    }
    else
@@ -3317,7 +3313,7 @@ HTREEITEM CTreeCtrl::InsertItem(
 }
 
 BOOL CTreeCtrl::SortChildren(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 )
 {
    QTreeWidgetItem* twi = hItem;
@@ -3336,7 +3332,7 @@ HTREEITEM CTreeCtrl::GetRootItem( ) const
 
 HTREEITEM CTreeCtrl::GetNextItem(
    HTREEITEM hItem,
-   UINT nCode 
+   UINT nCode
 ) const
 {
    QTreeWidgetItem* twi = hItem;
@@ -3379,7 +3375,7 @@ HTREEITEM CTreeCtrl::GetNextItem(
 }
 
 HTREEITEM CTreeCtrl::GetParentItem(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 ) const
 {
    QTreeWidgetItem* twi = hItem;
@@ -3395,7 +3391,7 @@ HTREEITEM CTreeCtrl::GetSelectedItem( ) const
 }
 
 BOOL CTreeCtrl::ItemHasChildren(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 ) const
 {
    QTreeWidgetItem* twi = hItem;
@@ -3407,7 +3403,7 @@ BOOL CTreeCtrl::ItemHasChildren(
 }
 
 DWORD_PTR CTreeCtrl::GetItemData(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 ) const
 {
    QTreeWidgetItem* twi = hItem;
@@ -3420,7 +3416,7 @@ DWORD_PTR CTreeCtrl::GetItemData(
 
 BOOL CTreeCtrl::SetItemData(
    HTREEITEM hItem,
-   DWORD_PTR dwData 
+   DWORD_PTR dwData
 )
 {
    QTreeWidgetItem* twi = hItem;
@@ -3433,7 +3429,7 @@ BOOL CTreeCtrl::SetItemData(
 }
 
 BOOL CTreeCtrl::DeleteItem(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 )
 {
    QTreeWidgetItem* twi = hItem;
@@ -3455,7 +3451,7 @@ BOOL CTreeCtrl::DeleteItem(
 
 BOOL CTreeCtrl::Expand(
    HTREEITEM hItem,
-   UINT nCode 
+   UINT nCode
 )
 {
    QTreeWidgetItem* twi = hItem;
@@ -3484,7 +3480,7 @@ BOOL CTreeCtrl::Expand(
 }
 
 CString CTreeCtrl::GetItemText(
-   HTREEITEM hItem 
+   HTREEITEM hItem
 ) const
 {
    QTreeWidgetItem* twi = hItem;
@@ -3501,17 +3497,17 @@ CScrollBar::CScrollBar(CWnd *parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( parent )
       _qt = new QScrollBar(parent->toQWidget());
    else
       _qt = new QScrollBar;
-   
+
    // Downcast to save having to do it all over the place...
-   _qtd = dynamic_cast<QScrollBar*>(_qt);   
-   
+   _qtd = dynamic_cast<QScrollBar*>(_qt);
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(actionTriggered(int)),this,SIGNAL(actionTriggered(int)));
 }
@@ -3528,7 +3524,7 @@ BOOL CScrollBar::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
@@ -3564,13 +3560,13 @@ BOOL CScrollBar::Create(
    }
    _qtd->setGeometry(myRect);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-      
+
    return TRUE;
 }
 
 BOOL CScrollBar::SetScrollInfo(
    LPSCROLLINFO lpScrollInfo,
-   BOOL bRedraw 
+   BOOL bRedraw
 )
 {
    if ( lpScrollInfo->fMask&SIF_RANGE )
@@ -3595,7 +3591,7 @@ BOOL CScrollBar::SetScrollInfo(
 
 int CScrollBar::SetScrollPos(
    int nPos,
-   BOOL bRedraw 
+   BOOL bRedraw
 )
 {
    int pos = _qtd->value();
@@ -3611,14 +3607,14 @@ void CScrollBar::SetScrollRange(
 {
    _qtd->setMinimum(nMinPos);
    _qtd->setMaximum(nMaxPos);
-}   
+}
 
 void CScrollBar::ShowScrollBar(
    BOOL bShow
 )
 {
    _qtd->setVisible(bShow);
-}   
+}
 
 BOOL CScrollBar::EnableScrollBar(
    UINT nArrowFlags
@@ -3632,7 +3628,7 @@ BOOL CCmdTarget::OnCmdMsg(
    UINT nID,
    int nCode,
    void* pExtra,
-   AFX_CMDHANDLERINFO* pHandlerInfo 
+   AFX_CMDHANDLERINFO* pHandlerInfo
 )
 {
    return TRUE;
@@ -3641,7 +3637,7 @@ BOOL CCmdTarget::OnCmdMsg(
 CWnd* CWnd::focusWnd = NULL;
 CFrameWnd* CWnd::m_pFrameWnd = NULL;
 
-CWnd::CWnd(CWnd *parent) 
+CWnd::CWnd(CWnd *parent)
    : m_pParentWnd(parent),
      mfcVerticalScrollBar(NULL),
      mfcHorizontalScrollBar(NULL),
@@ -3664,10 +3660,10 @@ CWnd::CWnd(CWnd *parent)
 
    _myDC = new CDC(this);
    _myDC->doFlush(false);
-   
+
    _qt->setMouseTracking(true);
    _qt->installEventFilter(this);
-   
+
    _qtd = dynamic_cast<QFrame*>(_qt);
 }
 
@@ -3684,14 +3680,14 @@ CWnd::~CWnd()
 
    if ( _qt )
       delete _qt;
-   _qt = NULL;   
+   _qt = NULL;
    _qtd = NULL;
 //   if ( _grid )
 //      delete _grid;
 }
 
 void CWnd::SetOwner(
-   CWnd* pOwnerWnd 
+   CWnd* pOwnerWnd
 )
 {
 }
@@ -3701,19 +3697,19 @@ int CWnd::GetWindowTextLength( ) const
    return 0;
 }
 
-CDC* CWnd::GetDC() 
-{ 
-   return _myDC; 
+CDC* CWnd::GetDC()
+{
+   return _myDC;
 }
 
-void CWnd::ReleaseDC(CDC* pDC) 
-{ 
+void CWnd::ReleaseDC(CDC* pDC)
+{
 }
 
 LRESULT CWnd::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    return 0;
@@ -3724,7 +3720,7 @@ void CWnd::SendMessageToDescendants(
    WPARAM wParam,
    LPARAM lParam,
    BOOL bDeep,
-   BOOL bOnlyPerm 
+   BOOL bOnlyPerm
 )
 {
    foreach ( CWnd* pWnd, mfcToQtWidget )
@@ -3853,7 +3849,7 @@ BOOL CWnd::CreateEx(
    CREATESTRUCT createStruct;
 
    m_hWnd = (HWND)this;
-   
+
    createStruct.dwExStyle = dwExStyle;
    createStruct.style = dwStyle;
    createStruct.x = rect.left;
@@ -3904,13 +3900,13 @@ BOOL CWnd::CreateEx(
 }
 
 int CWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{   
+{
    return 0;
 }
 
 void CWnd::UpdateDialogControls(
    CCmdTarget* pTarget,
-   BOOL bDisableIfNoHndler 
+   BOOL bDisableIfNoHndler
 )
 {
 }
@@ -3922,12 +3918,12 @@ void CWnd::RepositionBars(
    UINT nFlag,
    LPRECT lpRectParam,
    LPCRECT lpRectClient,
-   BOOL bStretch 
+   BOOL bStretch
 )
 {
    AFX_SIZEPARENTPARAMS layout;
    CWnd* pWndExtra = GetDlgItem(nIDLeftOver);
-   
+
    layout.bStretch = bStretch;
 	layout.sizeTotal.cx = layout.sizeTotal.cy = 0;
 //   if ( lpRectParam )
@@ -3960,7 +3956,7 @@ void CWnd::SetFont(
 
 void CWnd::MoveWindow(int x, int y, int cx, int cy)
 {
-   MoveWindow(CRect(CPoint(x,y),CSize(cx,cy)));   
+   MoveWindow(CRect(CPoint(x,y),CSize(cx,cy)));
 }
 
 void CWnd::MoveWindow(LPCRECT lpRect, BOOL bRepaint)
@@ -3972,7 +3968,7 @@ void CWnd::MoveWindow(LPCRECT lpRect, BOOL bRepaint)
 }
 
 void CWnd::DragAcceptFiles(
-   BOOL bAccept 
+   BOOL bAccept
 )
 {
    _qtd->setAcceptDrops(bAccept);
@@ -3988,13 +3984,13 @@ BOOL CWnd::PostMessage(
    msg.message = message;
    msg.wParam = wParam;
    msg.lParam = lParam;
-   
+
    BOOL handled = PreTranslateMessage(&msg);
    return handled;
 }
 
 CWnd* CWnd::GetDlgItem(
-   int nID 
+   int nID
 ) const
 {
    return mfcToQtWidget.value(nID);
@@ -4026,7 +4022,7 @@ UINT CWnd::GetDlgItemInt(
 
 void CWnd::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
    QtUIElement* pUIE = dynamic_cast<QtUIElement*>(GetDlgItem(nID));
@@ -4036,7 +4032,7 @@ void CWnd::SetDlgItemText(
 
 int CWnd::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    QtUIElement* pUIE = dynamic_cast<QtUIElement*>(GetDlgItem(nID));
@@ -4049,7 +4045,7 @@ int CWnd::GetDlgItemText(
 int CWnd::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
    QtUIElement* pUIE = dynamic_cast<QtUIElement*>(GetDlgItem(nID));
@@ -4059,9 +4055,9 @@ int CWnd::GetDlgItemText(
       return 0;
 }
 
-void CWnd::CheckDlgButton( 
-   int nIDButton, 
-   UINT nCheck  
+void CWnd::CheckDlgButton(
+   int nIDButton,
+   UINT nCheck
 )
 {
    QtUIElement* pUIE = dynamic_cast<QtUIElement*>(GetDlgItem(nIDButton));
@@ -4082,7 +4078,7 @@ UINT CWnd::IsDlgButtonChecked(
 
 BOOL CWnd::SubclassDlgItem(
    UINT nID,
-   CWnd* pParent 
+   CWnd* pParent
 )
 {
    CWnd* pWndSrc = pParent->GetDlgItem(nID);
@@ -4102,7 +4098,7 @@ BOOL CWnd::SubclassDlgItem(
 
 void CWnd::MapWindowPoints(
    CWnd* pwndTo,
-   LPRECT lpRect 
+   LPRECT lpRect
 ) const
 {
 }
@@ -4110,13 +4106,13 @@ void CWnd::MapWindowPoints(
 void CWnd::MapWindowPoints(
    CWnd* pwndTo,
    LPPOINT lpPoint,
-   UINT nCount 
+   UINT nCount
 ) const
 {
 }
 
 CScrollBar* CWnd::GetScrollBarCtrl(
-   int nBar 
+   int nBar
 ) const
 {
    switch ( nBar )
@@ -4199,7 +4195,7 @@ void CWnd::SetScrollRange(
    int nBar,
    int nMinPos,
    int nMaxPos,
-   BOOL bRedraw 
+   BOOL bRedraw
 )
 {
    switch ( nBar )
@@ -4261,14 +4257,14 @@ void CWnd::KillTimer(UINT id)
 }
 
 void CWnd::GetWindowText(
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qt->windowTitle();
 }
 
 void CWnd::SetWindowText(
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
 //#if UNICODE
@@ -4279,7 +4275,7 @@ void CWnd::SetWindowText(
 }
 
 void CWnd::GetWindowRect(
-   LPRECT lpRect 
+   LPRECT lpRect
 ) const
 {
    lpRect->left = geometry().left();
@@ -4289,7 +4285,7 @@ void CWnd::GetWindowRect(
 }
 
 void CWnd::GetClientRect(
-   LPRECT lpRect 
+   LPRECT lpRect
 ) const
 {
    lpRect->left = 0;
@@ -4332,14 +4328,14 @@ CFrameWnd::CFrameWnd(CWnd *parent)
 {
    m_pFrameWnd = this;
    ptrToTheApp->m_pMainWnd = this;
-   
+
    QWidget* centralWidget = _qt;
    QGridLayout* gridLayout = _grid;
-   
+
    gridLayout->setSpacing(0);
    gridLayout->setContentsMargins(0, 0, 0, 0);
    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-   
+
    cbrsBottom = new QVBoxLayout();
    cbrsBottom->setSpacing(0);
    cbrsBottom->setContentsMargins(0,0,0,0);
@@ -4375,7 +4371,7 @@ CFrameWnd::CFrameWnd(CWnd *parent)
    gridLayout->addLayout(cbrsRight, 1, 2, 1, 1);
    gridLayout->setColumnMinimumWidth(2,0);
    gridLayout->setColumnStretch(2,0);
-   
+
    realCentralWidget = new QWidget;
 //   realCentralWidget->setSpacing(0);
 //   realCentralWidget->setContentsMargins(0,0,0,0);
@@ -4385,9 +4381,9 @@ CFrameWnd::CFrameWnd(CWnd *parent)
 
    gridLayout->setRowStretch(1,1);
    gridLayout->setColumnStretch(1,1);
-   
+
    centralWidget->setLayout(gridLayout);
-   
+
    m_pMenuBar = new QMenuBar;
 //   m_pMenuBar->addMenu(qtMfcMenuResource(128).toQMenu());
    ptrToTheApp->qtMainWindow->setMenuBar(m_pMenuBar);
@@ -4421,7 +4417,7 @@ void CFrameWnd::addControlBar(int area, QWidget *bar)
 
 void CFrameWnd::InitialUpdateFrame(
    CDocument* pDoc,
-   BOOL bMakeVisible 
+   BOOL bMakeVisible
 )
 {
    // send initial update to all views (and other controls) in the frame
@@ -4439,7 +4435,7 @@ void CFrameWnd::SetMessageText(LPCTSTR fmt,...)
 }
 
 void CFrameWnd::SetMessageText(
-   UINT nID 
+   UINT nID
 )
 {
    CString message = qtMfcStringResource(nID);
@@ -4512,9 +4508,9 @@ void CFrameWnd::RecalcLayout(
 	m_bInRecalcLayout = FALSE;
 }
 
-CView::CView(CWnd* parent) 
-   : CWnd(parent), 
-     m_pDocument(NULL) 
+CView::CView(CWnd* parent)
+   : CWnd(parent),
+     m_pDocument(NULL)
 {
 }
 
@@ -4524,25 +4520,25 @@ CView::~CView()
 
 CSize CControlBar::CalcFixedLayout(
    BOOL bStretch,
-   BOOL bHorz 
+   BOOL bHorz
 )
 {
    return CSize(0,0);
 }
 
-BOOL CReBarCtrl::Create( 
-   DWORD dwStyle, 
-   const RECT& rect, 
-   CWnd* pParentWnd, 
-   UINT nID  
+BOOL CReBarCtrl::Create(
+   DWORD dwStyle,
+   const RECT& rect,
+   CWnd* pParentWnd,
+   UINT nID
 )
-{   
+{
    m_hWnd = (HWND)this;
    _dwStyle = dwStyle;
 
    if ( _qt )
       delete _qt;
-   
+
    if ( pParentWnd )
       _qt = new QToolBar(pParentWnd->toQWidget());
    else
@@ -4550,7 +4546,7 @@ BOOL CReBarCtrl::Create(
 
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QToolBar*>(_qt);
-   
+
    _qtd->setMovable(false);
    CRect clientRect;
    pParentWnd->GetClientRect(&clientRect);
@@ -4558,9 +4554,9 @@ BOOL CReBarCtrl::Create(
    return TRUE;
 }
 
-BOOL CReBarCtrl::InsertBand( 
-   UINT uIndex, 
-   REBARBANDINFO* prbbi  
+BOOL CReBarCtrl::InsertBand(
+   UINT uIndex,
+   REBARBANDINFO* prbbi
 )
 {
    CWnd* pWnd = (CWnd*)prbbi->hwndChild;
@@ -4588,7 +4584,7 @@ void CReBarCtrl::toolBarAction_triggered()
 }
 
 CReBar::CReBar()
-{   
+{
    m_pReBarCtrl = new CReBarCtrl;
 }
 
@@ -4605,22 +4601,22 @@ BOOL CReBar::Create(
 )
 {
    m_hWnd = (HWND)this;
-   
+
    CRect rect;
    pParentWnd->GetClientRect(&rect);
    m_pReBarCtrl->Create(dwStyle,rect,pParentWnd,nID);
-   
+
    ptrToTheApp->qtMainWindow->addToolBar(dynamic_cast<QToolBar*>(m_pReBarCtrl->toQWidget()));
    return TRUE;
 }
 
 CToolBar::CToolBar(CWnd* parent)
-{   
+{
    _dwStyle = 0;
-   
+
    if ( _qt )
       delete _qt;
-   
+
    if ( parent )
       _qt = new QToolBar(parent->toQWidget());
    else
@@ -4628,7 +4624,7 @@ CToolBar::CToolBar(CWnd* parent)
 
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QToolBar*>(_qt);
-   
+
    _qtd->setMovable(false);
 }
 
@@ -4656,23 +4652,23 @@ BOOL CToolBar::CreateEx(
       _qt->setParent(pParentWnd->toQWidget());
    else
       _qt->setParent(NULL);
-   
+
    pParentWnd->mfcToQtWidgetMap()->insert(nID,this);
-   
+
    return TRUE;
 }
 
 LRESULT CToolBar::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    return 0;
 }
 
 BOOL CToolBar::LoadToolBar(
-   UINT nIDResource 
+   UINT nIDResource
 )
 {
    qtMfcInitToolBarResource(nIDResource,this);
@@ -4687,10 +4683,10 @@ void CToolBar::toolBarAction_triggered()
 CStatusBar::CStatusBar(CWnd* parent)
 {
    _dwStyle = 0;
-   
+
    if ( _qt )
       delete _qt;
-   
+
    if ( parent )
       _qt = new QStatusBar(parent->toQWidget());
    else
@@ -4716,11 +4712,11 @@ BOOL CStatusBar::Create(
 {
    m_hWnd = (HWND)this;
    _dwStyle = dwStyle;
-   
+
    pParentWnd->mfcToQtWidgetMap()->insert(nID,this);
 
    ptrToTheApp->qtMainWindow->setStatusBar(_qtd);
-   
+
    // Pass-through signals
 
    return TRUE;
@@ -4729,7 +4725,7 @@ BOOL CStatusBar::Create(
 LRESULT CStatusBar::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    return 0;
@@ -4737,11 +4733,11 @@ LRESULT CStatusBar::SendMessage(
 
 BOOL CStatusBar::SetIndicators(
    const UINT* lpIDArray,
-   int nIDCount 
+   int nIDCount
 )
 {
    int pane;
-   
+
    for ( pane = 0; pane < nIDCount; pane++ )
    {
       CStatic* newPane = new CStatic;
@@ -4764,7 +4760,7 @@ BOOL CStatusBar::SetIndicators(
 BOOL CStatusBar::SetPaneText(
    int nIndex,
    LPCTSTR lpszNewText,
-   BOOL bUpdate 
+   BOOL bUpdate
 )
 {
    CStatic* pane = _panes.value(nIndex);
@@ -4784,7 +4780,7 @@ CDialogBar::CDialogBar()
 {
    _mfcd = new CDialog;
    _mfcd->setGeometry(0,0,100,100);
-   
+
    _qt->installEventFilter(this);
 }
 
@@ -4797,7 +4793,7 @@ CDialogBar::~CDialogBar()
 LRESULT CDialogBar::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    AFX_SIZEPARENTPARAMS* pLayout = (AFX_SIZEPARENTPARAMS*)lParam;
@@ -4808,7 +4804,7 @@ LRESULT CDialogBar::SendMessage(
       if ( _qt->isVisible() )
       {
          if ( _nStyle&CBRS_TOP )
-         {            
+         {
             pLayout->rect.top += rect().height();
             myRect.setHeight(rect().height());
             myRect.setWidth(pLayout->rect.right-pLayout->rect.left);
@@ -4824,7 +4820,7 @@ LRESULT CDialogBar::SendMessage(
             pLayout->sizeTotal.cy = pLayout->rect.bottom-pLayout->rect.top;
          }
          else if ( _nStyle&CBRS_BOTTOM )
-         {            
+         {
             pLayout->rect.bottom -= rect().height();
             myRect.setHeight(rect().height());
             myRect.setWidth(pLayout->rect.right-pLayout->rect.left);
@@ -4853,24 +4849,24 @@ BOOL CDialogBar::Create(
    CWnd* pParentWnd,
    UINT nIDTemplate,
    UINT nStyle,
-   UINT nID 
+   UINT nID
 )
-{ 
+{
    m_hWnd = (HWND)this;
    _nStyle = nStyle;
-   
+
    _mfcd->Create(nIDTemplate,this);
-   
-   _qt->setParent(pParentWnd->toQWidget()); 
-   
+
+   _qt->setParent(pParentWnd->toQWidget());
+
    // This is a container.
    foreach ( UINT key, _mfcd->mfcToQtWidgetMap()->keys() )
    {
       mfcToQtWidget.insert(key,_mfcd->mfcToQtWidgetMap()->value(key));
    }
-   
+
    pParentWnd->mfcToQtWidgetMap()->insertMulti(nID,this);
-   
+
    if ( nStyle&CBRS_TOP )
    {
       _qt->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Fixed));
@@ -4902,13 +4898,13 @@ BOOL CDialogBar::Create(
    }
    ShowWindow(SW_SHOW);
 //   setVisible(true);
-   
+
    return TRUE;
 }
 
 CSize CDialogBar::CalcFixedLayout(
    BOOL bStretch,
-   BOOL bHorz 
+   BOOL bHorz
 )
 {
    if (bStretch) // if not docked stretch to fit
@@ -4922,14 +4918,14 @@ CDialog::CDialog()
 {
    if ( _qt )
       delete _qt;
-   
+
    _qt = new QDialog;
-   
+
    _qtd = dynamic_cast<QDialog*>(_qt);
    _inited = false;
-   
+
    _qt->installEventFilter(this);
-   
+
    // Pass-through signals
 }
 
@@ -4938,20 +4934,20 @@ CDialog::CDialog(int dlgID, CWnd *parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( parent )
       _qt = new QDialog(parent);
    else
       _qt = new QDialog;
-   
+
    _qtd = dynamic_cast<QDialog*>(_qt);
    _inited = false;
    _id = dlgID;
-   
+
    _qt->installEventFilter(this);
-   
+
    // Pass-through signals
 }
 
@@ -4970,35 +4966,35 @@ BOOL CDialog::Create(
    UINT nIDTemplate,
    CWnd* pParentWnd
 )
-{ 
+{
    m_hWnd = (HWND)this;
 
    qtMfcInitDialogResource(nIDTemplate,this);
-   
+
    if ( pParentWnd )
-      _qt->setParent(pParentWnd->toQWidget()); 
+      _qt->setParent(pParentWnd->toQWidget());
    else
       _qt->setParent(NULL);
-   SetParent(pParentWnd); 
+   SetParent(pParentWnd);
    if ( pParentWnd == m_pFrameWnd )
       _qt->setParent(NULL);
-   
+
    foreach ( CWnd* pWnd, mfcToQtWidget ) pWnd->blockSignals(true);
-   BOOL result = OnInitDialog(); 
+   BOOL result = OnInitDialog();
    _inited = true;
    return result;
 }
 
 INT_PTR CDialog::DoModal()
-{ 
+{
    if ( !_inited )
    {
       qtMfcInitDialogResource(_id,this);
-      
+
       OnInitDialog();
    }
    _inited = true;
-   
+
    INT_PTR result = _qtd->exec();
    if ( result == QDialog::Accepted )
       return 1;
@@ -5007,7 +5003,7 @@ INT_PTR CDialog::DoModal()
 }
 
 void CDialog::SetWindowText(
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
 #if UNICODE
@@ -5033,15 +5029,15 @@ void CDialog::ShowWindow(int code)
    }
 }
 
-void CDialog::MapDialogRect( 
-   LPRECT lpRect  
+void CDialog::MapDialogRect(
+   LPRECT lpRect
 ) const
 {
    QFontMetrics sysFontMetrics(QFont("MS Shell Dlg",8));
- 
+
    int baseunitX = sysFontMetrics.averageCharWidth()+1;
    int baseunitY = sysFontMetrics.height();
-   
+
    lpRect->left   = MulDiv(lpRect->left,   baseunitX, 4);
    lpRect->right  = MulDiv(lpRect->right,  baseunitX, 4);
    lpRect->top    = MulDiv(lpRect->top,    baseunitY, 8);
@@ -5049,7 +5045,7 @@ void CDialog::MapDialogRect(
 }
 
 void CDialog::EndDialog(
-   int nResult 
+   int nResult
 )
 {
    _qtd->setResult(nResult);
@@ -5068,8 +5064,8 @@ CCommonDialog::~CCommonDialog()
 CWinThread::CWinThread()
 {
    m_hThread = (HANDLE)this;
-   m_nThreadID = (DWORD)QThread::currentThreadId();
-   
+   m_nThreadID = (uintptr_t)QThread::currentThreadId();
+
    InitInstance();
 }
 
@@ -5080,7 +5076,7 @@ CWinThread::~CWinThread()
 BOOL CWinThread::CreateThread(
    DWORD dwCreateFlags,
    UINT nStackSize,
-   LPSECURITY_ATTRIBUTES lpSecurityAttrs 
+   LPSECURITY_ATTRIBUTES lpSecurityAttrs
 )
 {
    return TRUE;
@@ -5093,7 +5089,7 @@ DWORD CWinThread::ResumeThread( )
 }
 
 BOOL CWinThread::SetThreadPriority(
-   int nPriority 
+   int nPriority
 )
 {
    QThread::Priority priority = QThread::currentThread()->priority();
@@ -5127,34 +5123,34 @@ BOOL CWinThread::SetThreadPriority(
 BOOL CWinThread::PostThreadMessage(
    UINT message ,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
       )
 {
-   emit postThreadMessage(message,wParam,lParam); 
+   emit postThreadMessage(message,wParam,lParam);
    return TRUE;
 }
 
-POSITION CDocument::GetFirstViewPosition() const 
-{ 
+POSITION CDocument::GetFirstViewPosition() const
+{
    POSITION pos = NULL;
    if ( _views.count() )
    {
-      pos = new int; 
-      (*pos) = 0; 
+      pos = new int;
+      (*pos) = 0;
    }
-   return pos; 
+   return pos;
 }
 
-CView* CDocument::GetNextView(POSITION pos) const 
-{ 
+CView* CDocument::GetNextView(POSITION pos) const
+{
    if ( !pos ) return NULL; // Choker for end-of-list
-   CView* pView = _views.at((*pos)++); 
-   if ( (*pos) >= _views.count() ) 
-   { 
-      delete pos; 
-      pos = 0; 
-   } 
-   return pView; 
+   CView* pView = _views.at((*pos)++);
+   if ( (*pos) >= _views.count() )
+   {
+      delete pos;
+      pos = 0;
+   }
+   return pView;
 }
 
 CDocTemplate::CDocTemplate(UINT f,CDocument* pDoc,CFrameWnd* pFrameWnd,CView* pView)
@@ -5162,9 +5158,9 @@ CDocTemplate::CDocTemplate(UINT f,CDocument* pDoc,CFrameWnd* pFrameWnd,CView* pV
    m_pDoc = pDoc;
    m_pFrameWnd = pFrameWnd;
    m_pView = pView;
-   
+
    m_pDoc->OnNewDocument();
-   
+
    // Create linkages...
    m_pDoc->privateSetDocTemplate(this);
    m_pDoc->privateAddView(m_pView);
@@ -5184,29 +5180,29 @@ void CDocTemplate::InitialUpdateFrame(CFrameWnd* pFrame, CDocument* pDoc,
 
 BOOL CDocTemplate::GetDocString(
    CString& rString,
-   enum DocStringIndex index 
+   enum DocStringIndex index
 ) const
 {
    switch ( index )
    {
    case windowTitle:
       break;
-      
+
    case docName:
       break;
-      
+
    case fileNewName:
       break;
-      
+
    case filterName:
       break;
-      
+
    case filterExt:
       break;
-      
+
    case regFileTypeId:
       break;
-      
+
    case regFileTypeName:
       break;
    }
@@ -5225,27 +5221,27 @@ POSITION CSingleDocTemplate::GetFirstDocPosition( ) const
 {
    POSITION pos = NULL;
 
-   pos = new int; 
-   (*pos) = 0; 
-   
-   return pos; 
+   pos = new int;
+   (*pos) = 0;
+
+   return pos;
 }
 
 CDocument* CSingleDocTemplate::GetNextDoc(
-   POSITION& rPos 
+   POSITION& rPos
 ) const
 {
    if ( !rPos ) return NULL; // Choker for end-of-list
-   CDocument* pDoc = m_pDoc; 
+   CDocument* pDoc = m_pDoc;
 
-   delete rPos; 
-   
-   return pDoc; 
+   delete rPos;
+
+   return pDoc;
 }
 
 CDocument* CSingleDocTemplate::OpenDocumentFile(
    LPCTSTR lpszPathName,
-   BOOL bMakeVisible 
+   BOOL bMakeVisible
 )
 {
    if ( lpszPathName )
@@ -5266,9 +5262,9 @@ CCommandLineInfo::CCommandLineInfo( )
    _args = QCoreApplication::arguments();
 }
 
-void CCommandLineInfo::ParseParam( 
-   const TCHAR* pszParam,  
-   BOOL bFlag, 
+void CCommandLineInfo::ParseParam(
+   const TCHAR* pszParam,
+   BOOL bFlag,
    BOOL bLast
 )
 {
@@ -5276,7 +5272,7 @@ void CCommandLineInfo::ParseParam(
 }
 
 void CWinApp::ParseCommandLine(
-   CCommandLineInfo& rCmdInfo 
+   CCommandLineInfo& rCmdInfo
 )
 {
    int arg;
@@ -5298,8 +5294,8 @@ void CWinApp::ParseCommandLine(
    }
 }
 
-BOOL CWinApp::ProcessShellCommand( 
-   CCommandLineInfo& rCmdInfo  
+BOOL CWinApp::ProcessShellCommand(
+   CCommandLineInfo& rCmdInfo
 )
 {
    qDebug("ProcessShellCommand");
@@ -5307,7 +5303,7 @@ BOOL CWinApp::ProcessShellCommand(
 }
 
 BOOL CWinApp::PreTranslateMessage(
-   MSG* pMsg 
+   MSG* pMsg
 )
 {
    return TRUE;
@@ -5318,39 +5314,39 @@ POSITION CWinApp::GetFirstDocTemplatePosition( ) const
    POSITION pos = NULL;
    if ( _docTemplates.count() )
    {
-      pos = new int; 
-      (*pos) = 0; 
+      pos = new int;
+      (*pos) = 0;
    }
-   return pos; 
+   return pos;
 }
 
 CDocTemplate* CWinApp::GetNextDocTemplate(
-   POSITION& pos 
+   POSITION& pos
 ) const
 {
    if ( !pos ) return NULL; // Choker for end-of-list
-   CDocTemplate* pDocTemplate = _docTemplates.at((*pos)++); 
-   if ( (*pos) >= _docTemplates.count() ) 
-   { 
-      delete pos; 
-      pos = 0; 
-   } 
-   return pDocTemplate; 
+   CDocTemplate* pDocTemplate = _docTemplates.at((*pos)++);
+   if ( (*pos) >= _docTemplates.count() )
+   {
+      delete pos;
+      pos = 0;
+   }
+   return pDocTemplate;
 }
 
-void CWinApp::AddDocTemplate(CDocTemplate* pDocTemplate) 
-{ 
+void CWinApp::AddDocTemplate(CDocTemplate* pDocTemplate)
+{
    _docTemplates.append(pDocTemplate);
 }
 
 CDocument* CWinApp::OpenDocumentFile(
-   LPCTSTR lpszFileName 
+   LPCTSTR lpszFileName
 )
 {
    POSITION pos;
    CDocTemplate* pDocTemplate = NULL;
    CDocument* pDoc = NULL;
-   
+
    pos = GetFirstDocTemplatePosition();
    if ( pos )
    {
@@ -5365,7 +5361,7 @@ CDocument* CWinApp::OpenDocumentFile(
 }
 
 HICON CWinApp::LoadIcon(
-   UINT nIDResource 
+   UINT nIDResource
 ) const
 {
    return (HICON)qtMfcBitmapResource(nIDResource);
@@ -5385,8 +5381,8 @@ void CWinApp::OnFileOpen()
 {
 }
 
-HCURSOR CWinApp::LoadStandardCursor( 
-   LPCTSTR lpszCursorName  
+HCURSOR CWinApp::LoadStandardCursor(
+   LPCTSTR lpszCursorName
 ) const
 {
    qDebug("LoadStandardCursor needs work...");
@@ -5401,7 +5397,7 @@ CMenu::CMenu()
 }
 
 BOOL CMenu::LoadMenu(
-   UINT nIDResource 
+   UINT nIDResource
 )
 {
    _cmenu.clear();
@@ -5410,7 +5406,7 @@ BOOL CMenu::LoadMenu(
 }
 
 CMenu* CMenu::GetSubMenu(
-   int nPos 
+   int nPos
 ) const
 {
    return _cmenu.value(nPos);
@@ -5451,7 +5447,7 @@ BOOL CMenu::AppendMenu(
       if ( nFlags&MF_CHECKED )
       {
          action->setCheckable(true);
-         action->setChecked(true);         
+         action->setChecked(true);
       }
       if ( nFlags&MF_ENABLED )
       {
@@ -5465,7 +5461,7 @@ BOOL CMenu::AppendMenu(
       mfcToQtMenu.insert(nIDNewItem,action);
       qtToMfcMenu.insert(action,nIDNewItem);
    }
-   
+
    return TRUE;
 }
 
@@ -5481,7 +5477,7 @@ BOOL CMenu::SetDefaultItem(
 {
    QAction* action;
    BOOL result = FALSE;
-   
+
    if ( fByPos )
    {
       action = _qtd->actions().at(uItem);
@@ -5500,7 +5496,7 @@ BOOL CMenu::SetDefaultItem(
 
 UINT CMenu::CheckMenuItem(
    UINT nIDCheckItem,
-   UINT nCheck 
+   UINT nCheck
 )
 {
    QAction* action = mfcToQtMenu.value(nIDCheckItem);
@@ -5532,13 +5528,13 @@ BOOL CMenu::TrackPopupMenu(
    {
       result = 1;
    }
-      
+
    return result;
 }
 
 UINT CMenu::EnableMenuItem(
    UINT nIDEnableItem,
-   UINT nEnable 
+   UINT nEnable
 )
 {
    QAction* action = mfcToQtMenu.value(nIDEnableItem);
@@ -5563,14 +5559,14 @@ CTabCtrl::CTabCtrl(CWnd* parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QTabWidget(parent->toQWidget());
 
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QTabWidget*>(_qt);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(currentChanged(int)),this,SIGNAL(currentChanged(int)));
 }
@@ -5585,7 +5581,7 @@ CTabCtrl::~CTabCtrl()
 
 LONG CTabCtrl::InsertItem(
   int nItem,
-  LPCTSTR lpszItem 
+  LPCTSTR lpszItem
 )
 {
    _qtd->blockSignals(true); // Don't cause TcnSelchange yet...
@@ -5599,7 +5595,7 @@ LONG CTabCtrl::InsertItem(
 }
 
 int CTabCtrl::SetCurSel(
-  int nItem 
+  int nItem
 )
 {
    int oldSel = _qtd->currentIndex();
@@ -5640,32 +5636,32 @@ BOOL CEdit::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
    _dwStyle = dwStyle;
-   
+
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( dwStyle&ES_MULTILINE )
    {
       if ( pParentWnd )
          _qt = new QPlainTextEdit(pParentWnd->toQWidget());
       else
          _qt = new QPlainTextEdit;
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_ptedit = dynamic_cast<QPlainTextEdit*>(_qt);
-      
+
       // Pass-through signals
       QObject::connect(_qtd_ptedit,SIGNAL(textChanged(QString)),this,SIGNAL(textChanged(QString)));
-   
+
       _qtd_ptedit->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
-      
+
       _qtd_ptedit->setVisible(dwStyle&WS_VISIBLE);
    }
    else
@@ -5674,25 +5670,25 @@ BOOL CEdit::Create(
          _qt = new QLineEdit(pParentWnd->toQWidget());
       else
          _qt = new QLineEdit;
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_ledit = dynamic_cast<QLineEdit*>(_qt);
-      
+
       // Pass-through signals
       QObject::connect(_qtd_ledit,SIGNAL(textChanged(QString)),this,SIGNAL(textChanged(QString)));
-   
+
       _qtd_ledit->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
-      
+
       _qtd_ledit->setVisible(dwStyle&WS_VISIBLE);
    }
-   
+
    return TRUE;
 }
 
 LRESULT CEdit::SendMessage(
    UINT message,
    WPARAM wParam,
-   LPARAM lParam 
+   LPARAM lParam
 )
 {
    if ( _dwStyle&ES_MULTILINE )
@@ -5739,7 +5735,7 @@ void CEdit::SetSel(
          temp = nEndChar;
          nEndChar = nStartChar;
          nStartChar = temp;
-      }   
+      }
       textCursor.setPosition(nStartChar);
       textCursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,nEndChar-nStartChar);
       _qtd_ptedit->setTextCursor(textCursor);
@@ -5820,7 +5816,7 @@ BOOL CEdit::EnableWindow(
 void CEdit::SetDlgItemInt(
    int nID,
    UINT nValue,
-   BOOL bSigned 
+   BOOL bSigned
 )
 {
    if ( _dwStyle&ES_MULTILINE )
@@ -5851,7 +5847,7 @@ UINT CEdit::GetDlgItemInt(
 
 void CEdit::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
    if ( _dwStyle&ES_MULTILINE )
@@ -5860,7 +5856,7 @@ void CEdit::SetDlgItemText(
       _qtd_ptedit->setPlainText(QString::fromWCharArray(lpszString));
 #else
       _qtd_ptedit->setPlainText(lpszString);
-#endif   
+#endif
    }
    else
    {
@@ -5868,13 +5864,13 @@ void CEdit::SetDlgItemText(
       _qtd_ledit->setText(QString::fromWCharArray(lpszString));
 #else
       _qtd_ledit->setText(lpszString);
-#endif   
-   }   
+#endif
+   }
 }
 
 int CEdit::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    if ( _dwStyle&ES_MULTILINE )
@@ -5892,7 +5888,7 @@ int CEdit::GetDlgItemText(
 int CEdit::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
    if ( _dwStyle&ES_MULTILINE )
@@ -5901,7 +5897,7 @@ int CEdit::GetDlgItemText(
       wcsncpy(lpStr,(LPWSTR)_qtd_ptedit->toPlainText().unicode(),nMaxCount);
 #else
       strncpy(lpStr,_qtd_ptedit->toPlainText().toAscii().constData(),nMaxCount);
-#endif   
+#endif
       return _qtd_ptedit->toPlainText().length();
    }
    else
@@ -5910,7 +5906,7 @@ int CEdit::GetDlgItemText(
       wcsncpy(lpStr,(LPWSTR)_qtd_ledit->text().unicode(),nMaxCount);
 #else
       strncpy(lpStr,_qtd_ledit->text().toAscii().constData(),nMaxCount);
-#endif   
+#endif
       return _qtd_ledit->text().length();
    }
 }
@@ -5937,23 +5933,23 @@ BOOL CButton::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
 
    DWORD buttonType = dwStyle&0x000F;
    DWORD buttonStyle = dwStyle&0xFFF0;
-   
+
    if ( _qt )
       delete _qt;
 
    _grid = NULL;
-   
+
    if ( buttonType == BS_AUTOCHECKBOX )
    {
       _qt = new QCheckBox(pParentWnd->toQWidget());
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_check = dynamic_cast<QCheckBox*>(_qt);
       _qtd_check->setCheckable(true);
@@ -5961,7 +5957,7 @@ BOOL CButton::Create(
    else if ( buttonType == BS_AUTO3STATE )
    {
       _qt = new QCheckBox(pParentWnd->toQWidget());
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_check = dynamic_cast<QCheckBox*>(_qt);
       _qtd_check->setCheckable(true);
@@ -5970,22 +5966,22 @@ BOOL CButton::Create(
    else if ( buttonType == BS_AUTORADIOBUTTON )
    {
       _qt = new QRadioButton(pParentWnd->toQWidget());
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_radio = dynamic_cast<QRadioButton*>(_qt);
       _qtd_radio->setCheckable(true);
    }
-   else if ( (buttonType == BS_PUSHBUTTON) || 
+   else if ( (buttonType == BS_PUSHBUTTON) ||
              (buttonType == BS_DEFPUSHBUTTON) )
    {
       _qt = new QPushButton(pParentWnd->toQWidget());
-      
+
       // Downcast to save having to do it all over the place...
       _qtd_push = dynamic_cast<QPushButton*>(_qt);
-      
+
       _qtd_push->setDefault(buttonType==BS_DEFPUSHBUTTON);
    }
-   
+
    _qtd = dynamic_cast<QAbstractButton*>(_qt);
 
 #if UNICODE
@@ -5993,18 +5989,18 @@ BOOL CButton::Create(
 #else
    _qtd->setText(lpszCaption);
 #endif
-   
+
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(clicked()),this,SIGNAL(clicked()));
-   
+
    return TRUE;
 }
 
 HBITMAP CButton::SetBitmap(
-   HBITMAP hBitmap 
+   HBITMAP hBitmap
 )
 {
    CBitmap* pBitmap = (CBitmap*)hBitmap;
@@ -6014,7 +6010,7 @@ HBITMAP CButton::SetBitmap(
 void CButton::SetDlgItemInt(
    int nID,
    UINT nValue,
-   BOOL bSigned 
+   BOOL bSigned
 )
 {
    _qtd->setText(QString::number(nValue));
@@ -6031,7 +6027,7 @@ UINT CButton::GetDlgItemInt(
 
 void CButton::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
 #if UNICODE
@@ -6043,7 +6039,7 @@ void CButton::SetDlgItemText(
 
 int CButton::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qtd->text();
@@ -6053,27 +6049,27 @@ int CButton::GetDlgItemText(
 int CButton::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
 #if UNICODE
    wcsncpy(lpStr,(LPWSTR)_qtd->text().unicode(),nMaxCount);
 #else
    strncpy(lpStr,_qtd->text().toAscii().constData(),nMaxCount);
-#endif   
+#endif
    return _qtd->text().length();
 }
 
-void CButton::CheckDlgButton( 
-   int nIDButton, 
-   UINT nCheck  
+void CButton::CheckDlgButton(
+   int nIDButton,
+   UINT nCheck
 )
 {
    _qtd->setChecked(nCheck);
 }
 
-UINT CButton::IsDlgButtonChecked( 
-   int nIDButton 
+UINT CButton::IsDlgButtonChecked(
+   int nIDButton
 ) const
 {
    return _qtd->isChecked();
@@ -6099,21 +6095,21 @@ BOOL CBitmapButton::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
 
    DWORD buttonType = dwStyle&0x000F;
    DWORD buttonStyle = dwStyle&0xFFF0;
-   
+
    if ( _qt )
       delete _qt;
 
    _grid = NULL;
-   
+
    _qt = new QToolButton(pParentWnd->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QToolButton*>(_qt);
 
@@ -6122,13 +6118,13 @@ BOOL CBitmapButton::Create(
 #else
    _qtd->setText(lpszCaption);
 #endif
-   
+
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(clicked()),this,SIGNAL(clicked()));
-   
+
    return TRUE;
 }
 
@@ -6150,33 +6146,33 @@ BOOL CSpinButtonCtrl::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
 
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QSpinBox(pParentWnd->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QSpinBox*>(_qt);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
 
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setFrame(false);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
    return TRUE;
 }
 
 int CSpinButtonCtrl::SetPos(
-   int nPos 
+   int nPos
 )
 {
    int pos = _qtd->value();
@@ -6195,7 +6191,7 @@ int CSpinButtonCtrl::GetPos( ) const
 
 void CSpinButtonCtrl::SetRange(
    short nLower,
-   short nUpper 
+   short nUpper
 )
 {
    _qtd->setRange(nLower,nUpper);
@@ -6208,22 +6204,22 @@ CSliderCtrl::CSliderCtrl(CWnd* parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( parent )
       _qt = new QSlider(parent->toQWidget());
    else
       _qt = new QSlider;
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QSlider*>(_qt);
-   
+
    // Not sure if there's vertical sliders in MFC...
    _qtd->setOrientation(Qt::Horizontal);
    _qtd->setTickPosition(QSlider::TicksBelow);
    _qtd->setTickInterval(1);
-   
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(valueChanged(int)),this,SIGNAL(valueChanged(int)));
 }
@@ -6240,7 +6236,7 @@ BOOL CSliderCtrl::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
@@ -6266,7 +6262,7 @@ BOOL CSliderCtrl::Create(
       _qtd->setOrientation(Qt::Vertical);
       _qtd->setInvertedAppearance(true);
    }
-   
+
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
 
@@ -6275,7 +6271,7 @@ BOOL CSliderCtrl::Create(
 
 void CSliderCtrl::SetRange(
    short nLower,
-   short nUpper 
+   short nUpper
 )
 {
    _qtd->setRange(nLower,nUpper);
@@ -6290,7 +6286,7 @@ void CSliderCtrl::SetRangeMax(
 }
 
 void CSliderCtrl::SetPos(
-   int nPos 
+   int nPos
 )
 {
    _qtd->blockSignals(true);
@@ -6304,7 +6300,7 @@ int CSliderCtrl::GetPos( ) const
 }
 
 void CSliderCtrl::SetTicFreq(
-   int nFreq 
+   int nFreq
 )
 {
    _qtd->setTickInterval(nFreq);
@@ -6315,17 +6311,17 @@ CProgressCtrl::CProgressCtrl(CWnd* parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QProgressBar(parent->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QProgressBar*>(_qt);
-   
+
    // Not sure if there's vertical sliders in MFC...
    _qtd->setOrientation(Qt::Horizontal);
-   
+
    // Pass-through signals
 }
 
@@ -6339,14 +6335,14 @@ CProgressCtrl::~CProgressCtrl()
 
 void CProgressCtrl::SetRange(
    short nLower,
-   short nUpper 
+   short nUpper
 )
 {
    _qtd->setRange(nLower,nUpper);
 }
 
 void CProgressCtrl::SetPos(
-   int nPos 
+   int nPos
 )
 {
    _qtd->blockSignals(true);
@@ -6364,16 +6360,16 @@ CStatic::CStatic(CWnd *parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    if ( parent )
       _qt = new QLabel(parent->toQWidget());
    else
       _qt = new QLabel;
-   
+
    // Downcast to save having to do it all over the place...
-   _qtd = dynamic_cast<QLabel*>(_qt);      
+   _qtd = dynamic_cast<QLabel*>(_qt);
 }
 
 CStatic::~CStatic()
@@ -6396,22 +6392,22 @@ BOOL CStatic::Create(
 
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
 #if UNICODE
    _qtd->setText(QString::fromWCharArray(lpszText));
 #else
    _qtd->setText(lpszText);
 #endif
-   
+
    // Pass-through signals
-   
+
    return TRUE;
 }
 
 void CStatic::SetDlgItemInt(
    int nID,
    UINT nValue,
-   BOOL bSigned 
+   BOOL bSigned
 )
 {
    _qtd->setText(QString::number(nValue));
@@ -6428,7 +6424,7 @@ UINT CStatic::GetDlgItemInt(
 
 void CStatic::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
 #if UNICODE
@@ -6440,7 +6436,7 @@ void CStatic::SetDlgItemText(
 
 int CStatic::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qtd->text();
@@ -6450,14 +6446,14 @@ int CStatic::GetDlgItemText(
 int CStatic::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
 #if UNICODE
    wcsncpy(lpStr,(LPWSTR)_qtd->text().unicode(),nMaxCount);
 #else
    strncpy(lpStr,_qtd->text().toAscii().constData(),nMaxCount);
-#endif   
+#endif
    return _qtd->text().length();
 }
 
@@ -6466,16 +6462,16 @@ CGroupBox::CGroupBox(CWnd *parent)
 {
    if ( _qt )
       delete _qt;
-   
+
    _grid = NULL;
-   
+
    _qt = new QGroupBox(parent->toQWidget());
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QGroupBox*>(_qt);
-   
+
    _qtd->setContentsMargins(0,0,0,0);
-      
+
    // Pass-through signals
    QObject::connect(_qtd,SIGNAL(clicked()),this,SIGNAL(clicked()));
 }
@@ -6493,7 +6489,7 @@ BOOL CGroupBox::Create(
    DWORD dwStyle,
    const RECT& rect,
    CWnd* pParentWnd,
-   UINT nID 
+   UINT nID
 )
 {
    m_hWnd = (HWND)this;
@@ -6503,17 +6499,17 @@ BOOL CGroupBox::Create(
 #else
    _qtd->setTitle(lpszCaption);
 #endif
-   
+
    _qtd->setGeometry(rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top);
    _qtd->setVisible(dwStyle&WS_VISIBLE);
-   
+
    return TRUE;
 }
 
 void CGroupBox::SetDlgItemInt(
    int nID,
    UINT nValue,
-   BOOL bSigned 
+   BOOL bSigned
 )
 {
    _qtd->setTitle(QString::number(nValue));
@@ -6530,7 +6526,7 @@ UINT CGroupBox::GetDlgItemInt(
 
 void CGroupBox::SetDlgItemText(
    int nID,
-   LPCTSTR lpszString 
+   LPCTSTR lpszString
 )
 {
 #if UNICODE
@@ -6542,7 +6538,7 @@ void CGroupBox::SetDlgItemText(
 
 int CGroupBox::GetDlgItemText(
    int nID,
-   CString& rString 
+   CString& rString
 ) const
 {
    rString = _qtd->title();
@@ -6552,14 +6548,14 @@ int CGroupBox::GetDlgItemText(
 int CGroupBox::GetDlgItemText(
    int nID,
    LPTSTR lpStr,
-   int nMaxCount 
+   int nMaxCount
 ) const
 {
 #if UNICODE
    wcsncpy(lpStr,(LPWSTR)_qtd->title().unicode(),nMaxCount);
 #else
    strncpy(lpStr,_qtd->title().toAscii().constData(),nMaxCount);
-#endif   
+#endif
    return _qtd->title().length();
 }
 
@@ -6577,31 +6573,31 @@ CFileDialog::CFileDialog(
    int seg;
 
    m_pOFN = &m_ofn;
-   
+
    if ( _qt )
       delete _qt;
-   
+
    if ( pParentWnd )
       _qt = new QFileDialog(pParentWnd->toQWidget());
    else
       _qt = new QFileDialog;
-   
+
    // Downcast to save having to do it all over the place...
    _qtd = dynamic_cast<QFileDialog*>(_qt);
-   
+
    // Pass-through signals
-   
+
    _qtd->hide();
-   
+
 #if UNICODE
    qDebug(QString::fromWCharArray(lpszFilter).toAscii().constData());
    QStringList filtersList = QString::fromWCharArray(lpszFilter).split("|");
 #else
    QStringList filtersList = QString(lpszFilter).split("|");
 #endif
-   
+
    QString filters;
-   
+
    // Take out odd-numbered splits between ||;s and convert |'s to ;;'s.
    for ( seg = filtersList.count()-1; seg >= 0; seg -= 2 )
    {
@@ -6619,7 +6615,7 @@ CFileDialog::CFileDialog(
    {
       filters = filters.left(filters.length()-2);
    }
-   
+
 #if UNICODE
    _qtd->setDefaultSuffix(QString::fromWCharArray(lpszDefExt));
    _qtd->selectFile(QString::fromWCharArray(lpszFileName));
@@ -6659,7 +6655,7 @@ CFileDialog::~CFileDialog()
 }
 
 INT_PTR CFileDialog::DoModal()
-{ 
+{
    INT_PTR result = _qtd->exec();
    if ( result == QDialog::Accepted )
       return 1;
@@ -6673,25 +6669,25 @@ POSITION CFileDialog::GetStartPosition( ) const
    POSITION pos = NULL;
    if ( files.count() )
    {
-      pos = new int; 
-      (*pos) = 0; 
+      pos = new int;
+      (*pos) = 0;
    }
-   return pos; 
+   return pos;
 }
 
 CString CFileDialog::GetNextPathName(
-   POSITION& pos 
+   POSITION& pos
 ) const
 {
    if ( !pos ) return CString(); // Choker for end-of-list
    QStringList files = _qtd->selectedFiles();
-   CString file = files.at((*pos)++); 
-   if ( (*pos) >= files.count() ) 
-   { 
-      delete pos; 
-      pos = 0; 
-   } 
-   return file; 
+   CString file = files.at((*pos)++);
+   if ( (*pos) >= files.count() )
+   {
+      delete pos;
+      pos = 0;
+   }
+   return file;
 }
 
 CString CFileDialog::GetFileExt( ) const
@@ -6745,7 +6741,7 @@ CMutex::~CMutex()
 }
 
 BOOL CMutex::Lock(
-   DWORD dwTimeout 
+   DWORD dwTimeout
 )
 {
    return _qtd->tryLock(dwTimeout);
@@ -6768,7 +6764,7 @@ CCriticalSection::~CCriticalSection()
 }
 
 BOOL CCriticalSection::Lock(
-   DWORD dwTimeout 
+   DWORD dwTimeout
 )
 {
    return _qtd->tryLock(dwTimeout);
@@ -6788,7 +6784,7 @@ BOOL CEvent::SetEvent()
 
 BOOL CFileFind::FindFile(
    LPCTSTR pstrName,
-   DWORD dwUnused 
+   DWORD dwUnused
 )
 {
    BOOL found = FALSE;
@@ -6832,7 +6828,7 @@ BOOL CImageList::Create(
    int cy,
    UINT nFlags,
    int nInitial,
-   int nGrow 
+   int nGrow
 )
 {
    // Nothing to do here really...
@@ -6840,7 +6836,7 @@ BOOL CImageList::Create(
 
 int CImageList::Add(
    CBitmap* pbmImage,
-   CBitmap* pbmMask 
+   CBitmap* pbmMask
 )
 {
    _images.append(pbmImage);
@@ -6849,7 +6845,7 @@ int CImageList::Add(
 
 int CImageList::Add(
    CBitmap* pbmImage,
-   COLORREF crMask 
+   COLORREF crMask
 )
 {
    _images.append(pbmImage);
@@ -6857,7 +6853,7 @@ int CImageList::Add(
 }
 
 int CImageList::Add(
-   HICON hIcon 
+   HICON hIcon
 )
 {
    CBitmap* pBitmap = (CBitmap*)hIcon;
@@ -6875,7 +6871,7 @@ CPropertySheet::CPropertySheet(
 CPropertySheet::CPropertySheet(
    LPCTSTR pszCaption,
    CWnd* pParentWnd,
-   UINT iSelectPage 
+   UINT iSelectPage
 )
 {
 }
@@ -6886,7 +6882,7 @@ CPropertySheet::CPropertySheet(
    UINT iSelectPage,
    HBITMAP hbmWatermark,
    HPALETTE hpalWatermark,
-   HBITMAP hbmHeader 
+   HBITMAP hbmHeader
 )
 {
 }
@@ -6897,21 +6893,21 @@ CPropertySheet::CPropertySheet(
    UINT iSelectPage,
    HBITMAP hbmWatermark,
    HPALETTE hpalWatermark,
-   HBITMAP hbmHeader 
+   HBITMAP hbmHeader
 )
 {
 }
 
-CPropertyPage::CPropertyPage( 
-   UINT nIDTemplate, 
-   UINT nIDCaption, 
-   DWORD dwSize 
+CPropertyPage::CPropertyPage(
+   UINT nIDTemplate,
+   UINT nIDCaption,
+   DWORD dwSize
 )
 {
 }
 
 void CPropertyPage::SetModified(
-   BOOL bChanged 
+   BOOL bChanged
 )
 {
    qDebug("CPropertyPage::SetModified");

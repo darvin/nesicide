@@ -135,7 +135,7 @@ static void FDSSoundEGStep(FDS_EG *peg)
 }
 
 
-int32 __fastcall FDSSoundRender(void)
+int32 FDSSoundRender(void)
 {
 	int32 output;
 	/* Wave Generator */
@@ -222,7 +222,7 @@ int32 __fastcall FDSSoundRender(void)
 	return (fdssound.op[0].pg.freq != 0) ? output : 0;
 }
 
-void __fastcall FDSSoundVolume(unsigned int volume)
+void FDSSoundVolume(unsigned int volume)
 {
 	volume += 196;
 	fdssound.mastervolume = (volume << (LOG_BITS - 8)) << 1;
@@ -237,7 +237,7 @@ static const uint8 wave_delta_table[8] = {
 	0,256 - (4 << FM_DEPTH),256 - (2 << FM_DEPTH),256 - (1 << FM_DEPTH),
 };
 
-void __fastcall FDSSoundWrite(uint16 address, uint8 value)
+void FDSSoundWrite(uint16 address, uint8 value)
 {
 	if (0x4040 <= address && address <= 0x407F)
 	{
@@ -315,7 +315,7 @@ void __fastcall FDSSoundWrite(uint16 address, uint8 value)
 	}
 }
 
-uint8 __fastcall FDSSoundRead(uint16 address)
+uint8 FDSSoundRead(uint16 address)
 {
 	if (0x4040 <= address && address <= 0x407f)
 	{
@@ -346,7 +346,7 @@ static uint32 DivFix(uint32 p1, uint32 p2, uint32 fix)
 	return ret;
 }
 
-void __fastcall FDSSoundReset(void)
+void FDSSoundReset(void)
 {
 	uint32 i;
 	memset(&fdssound, 0, sizeof(FDSSOUND));

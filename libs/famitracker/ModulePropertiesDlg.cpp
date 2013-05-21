@@ -7,11 +7,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful, 
+** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-** Library General Public License for more details.  To obtain a 
-** copy of the GNU Library General Public License, write to the Free 
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.  To obtain a
+** copy of the GNU Library General Public License, write to the Free
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -68,13 +68,13 @@ void CModulePropertiesDlg::songList_itemSelectionChanged()
    CListCtrl *pList = (CListCtrl*) GetDlgItem(IDC_SONGLIST);
    NMLISTVIEW nmlv;
    LRESULT result;
-   
+
    nmlv.uChanged = LVIF_STATE;
    nmlv.iItem = pList->currentIndex().row();
    nmlv.iSubItem = pList->currentIndex().column();
    nmlv.uNewState = LCTRL_CHECKBOX_STATE|LVNI_SELECTED;
    nmlv.uOldState = 0;
-   
+
    OnLvnItemchangedSonglist((NMHDR*)&nmlv,&result);
 }
 
@@ -154,7 +154,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 
 	pChipBox->SetCurSel(pChannelMap->GetChipIndex(ExpChip));
 
-	// Vibrato 
+	// Vibrato
 	CComboBox *pVibratoBox = (CComboBox*)GetDlgItem(IDC_VIBRATO);
 	pVibratoBox->SetCurSel((m_pDocument->GetVibratoStyle() == VIBRATO_NEW) ? 0 : 1);
 
@@ -193,7 +193,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 		m_pDocument->SelectExpansionChip(iExpansionChip);
 	}
 
-	// Vibrato 
+	// Vibrato
 	CComboBox *pVibratoBox = (CComboBox*)GetDlgItem(IDC_VIBRATO);
 	m_pDocument->SetVibratoStyle((pVibratoBox->GetCurSel() == 0) ? VIBRATO_NEW : VIBRATO_OLD);
 
@@ -210,10 +210,10 @@ void CModulePropertiesDlg::OnBnClickedSongAdd()
 	// Try to add a track
 	if (!m_pDocument->AddTrack())
 		return;
-	
+
 	// New track is always the last one
 	int NewTrack = m_pDocument->GetTrackCount() - 1;
-	
+
 	TrackTitle.Format(TRACK_FORMAT, NewTrack, m_pDocument->GetTrackTitle(NewTrack));
 	m_pSongList->InsertItem(NewTrack, TrackTitle);
 
@@ -298,7 +298,7 @@ void CModulePropertiesDlg::OnEnChangeSongname()
 
 	pName->GetWindowText(Text);
 
-	Title.Format(TRACK_FORMAT, m_iSelectedSong + 1, Text);
+	Title.Format(TRACK_FORMAT, m_iSelectedSong + 1, static_cast<const char*>(Text));
 
 	m_pSongList->SetItemText(m_iSelectedSong, 0, Title);
 	m_pDocument->SetTrackTitle(m_iSelectedSong, Text.GetBuffer());

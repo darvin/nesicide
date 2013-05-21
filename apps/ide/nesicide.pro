@@ -78,17 +78,30 @@ mac {
    }
    NES_CXXFLAGS = -I $$TOP/libs/nes -I $$TOP/libs/nes/emulator -I $$TOP/libs/nes/common
    C64_CXXFLAGS = -I$$TOP/libs/c64 -I$$TOP/libs/c64/emulator -I$$TOP/libs/c64/common
-   FAMITRACKER_CXXFLAGS = -I$$TOP/libs/famitracker
+   #FAMITRACKER_CXXFLAGS = -I$$TOP/libs/famitracker
 
-   SDL_CXXFLAGS = -I $$DEPENDENCYPATH/SDL.framework/Headers
-   SDL_LIBS = -F $$DEPENDENCYPATH -framework SDL
+    isEmpty (SDL_CXXFLAGS) {
+       SDL_CXXFLAGS = $$system(sdl-config --cflags)
+    }
 
-   LUA_CXXFLAGS = -I $$DEPENDENCYPATH/Lua.framework/Headers
-   LUA_LIBS = -F $$DEPENDENCYPATH -framework Lua
+    isEmpty (SDL_LIBS) {
+            SDL_LIBS = $$system(sdl-config --libs)
+    }
+
+
+    isEmpty (LUA_CXXFLAGS) {
+            LUA_CXXFLAGS = $$system(pkg-config --silence-errors --cflags lua)
+    }
+
+
+    isEmpty (LUA_LIBS) {
+            LUA_LIBS = $$system(pkg-config --silence-errors --libs lua)
+    }
+
 
    NES_LIBS = -L$$TOP/libs/nes/$${LIB_BUILD_TYPE_DIR} -lnes-emulator
    C64_LIBS = -L$$TOP/libs/c64/$${LIB_BUILD_TYPE_DIR} -lc64-emulator
-   FAMITRACKER_LIBS = -L$$TOP/libs/famitracker/$${LIB_BUILD_TYPE_DIR} -lfamitracker
+   #FAMITRACKER_LIBS = -L$$TOP/libs/famitracker/$${LIB_BUILD_TYPE_DIR} -lfamitracker
 
    ICON = mac/resources/nesicide.icns
 
@@ -106,25 +119,25 @@ mac {
       @executable_path/../Frameworks/libc64-emulator.1.dylib \
       $${DESTDIR}/$${TARGET}.app/Contents/MacOS/nesicide $$escape_expand(\n\t)
 
-   QMAKE_POST_LINK += cp $$TOP/libs/famitracker/$${LIB_BUILD_TYPE_DIR}/libfamitracker.1.0.0.dylib \
-      $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/libfamitracker.1.dylib $$escape_expand(\n\t)
-   QMAKE_POST_LINK += install_name_tool -change libfamitracker.1.dylib \
-      @executable_path/../Frameworks/libfamitracker.1.dylib \
+   ##QMAKE_POST_LINK += cp $$TOP/libs/famitracker/$${LIB_BUILD_TYPE_DIR}/libfamitracker.1.0.0.dylib \
+   #   $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/libfamitracker.1.dylib $$escape_expand(\n\t)
+   #QMAKE_POST_LINK += install_name_tool -change libfamitracker.1.dylib \
+   #   @executable_path/../Frameworks/libfamitracker.1.dylib \
+   #   $${DESTDIR}/$${TARGET}.app/Contents/MacOS/nesicide $$escape_expand(\n\t)
+
+   QMAKE_POST_LINK += cp /usr/local/Cellar/qscintilla2/2.7.1/lib/libqscintilla2.9.0.1.dylib \
+      $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/libqscintilla2.9.dylib $$escape_expand(\n\t)
+   QMAKE_POST_LINK += install_name_tool -change libqscintilla2.9.dylib \
+      @executable_path/../Frameworks/libqscintilla2.9.dylib \
       $${DESTDIR}/$${TARGET}.app/Contents/MacOS/nesicide $$escape_expand(\n\t)
 
-   QMAKE_POST_LINK += cp mac/dependencies/libqscintilla2.6.1.0.dylib \
-      $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/libqscintilla2.6.dylib $$escape_expand(\n\t)
-   QMAKE_POST_LINK += install_name_tool -change libqscintilla2.6.dylib \
-      @executable_path/../Frameworks/libqscintilla2.6.dylib \
-      $${DESTDIR}/$${TARGET}.app/Contents/MacOS/nesicide $$escape_expand(\n\t)
-
-   QMAKE_POST_LINK += cp -r ~/Library/Frameworks/Lua.framework \
-      $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/ $$escape_expand(\n\t)
+   #QMAKE_POST_LINK += cp -r ~/Library/Frameworks/Lua.framework \
+   #   $${DESTDIR}/$${TARGET}.app/Contents/Frameworks/ $$escape_expand(\n\t)
 }
 
 unix:!mac {
-   NES_CXXFLAGS = -I $$TOP/libs/nes -I $$TOP/libs/nes/emulator -I $$TOP/libs/nes/common -I/usr/include/wine/windows/
-   C64_CXXFLAGS = -I $$TOP/libs/c64 -I $$TOP/libs/c64/emulator -I $$TOP/libs/c64/common -I/usr/include/wine/windows/
+   NES_CXXFLAGS = -I $$TOP/libs/nes -I $$TOP/libs/nes/emulator -I $$TOP/libs/nes/common -I/usr/include/wine/windows
+   C64_CXXFLAGS = -I $$TOP/libs/c64 -I $$TOP/libs/c64/emulator -I $$TOP/libs/c64/common -I/usr/include/wine/windows
    FAMITRACKER_CXXFLAGS = -I$$TOP/libs/famitracker
    NES_LIBS = -L$$TOP/libs/nes -lnes-emulator
    C64_LIBS = -L$$TOP/libs/c64 -lc64-emulator
@@ -181,8 +194,8 @@ unix:!mac {
 }
 
 unix:mac {
-	QMAKE_CFLAGS += -I $$DEPENDENCYPATH/wine/include -DWINE_UNICODE_NATIVE
-	QMAKE_CXXFLAGS += -I $$DEPENDENCYPATH/wine/include -DWINE_UNICODE_NATIVE
+	QMAKE_CFLAGS += -I /usr/local/include/wine/windows -DWINE_UNICODE_NATIVE
+	QMAKE_CXXFLAGS += -I /usr/local/include/wine/windows -DWINE_UNICODE_NATIVE
 }
 
 QMAKE_CXXFLAGS += -DIDE \

@@ -7,7 +7,10 @@
 
 #include "testsuiteexecutivedialog.h"
 
+
+#ifndef __APPLE__
 #include "cqtmfc_famitracker.h"
+#endif
 
 #include "main.h"
 
@@ -28,7 +31,9 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#ifndef __APPLE__
 #include "FamiTracker.h"
+#endif
 
 OutputPaneDockWidget* output = NULL;
 ProjectBrowserDockWidget* m_pProjectBrowser = NULL;
@@ -340,10 +345,12 @@ MainWindow::MainWindow(CProjectModel *projectModel, QWidget* parent) :
 
    // Start timer for doing background stuff.
    m_periodicTimer = startTimer(5000);
-   
+
    // Initialize the app...
+#ifndef __APPLE__
    qtMfcInit();
-   theApp.InitInstance(this);   
+   theApp.InitInstance(this);
+#endif
 }
 
 MainWindow::~MainWindow()
@@ -379,9 +386,11 @@ MainWindow::~MainWindow()
    delete m_pSourceNavigator;
    delete m_pSymbolInspector;
    delete m_pSearch;
-   
+
    // TODO: Handle unsaved documents or other pre-close stuffs
+#ifndef __APPLE__
    theApp.ExitInstance();
+#endif
 }
 
 void MainWindow::applicationActivationChanged(bool activated)
@@ -2578,12 +2587,12 @@ bool MainWindow::closeProject()
    {
       // Close all inspectors
       CDockWidgetRegistry::hideAll();
-   
+
       m_pSourceNavigator->shutdown();
-   
+
       // Stop the emulator if it is running
       emit pauseEmulation(false);
-   
+
       // Now save the emulator state if a save state file is specified.
       if ( !nesicideProject->getProjectTarget().compare("nes",Qt::CaseInsensitive) )
       {
@@ -2592,36 +2601,36 @@ bool MainWindow::closeProject()
             saveEmulatorState(nesicideProject->getProjectCartridgeSaveStateName());
          }
       }
-   
+
       // Terminate the project and let the IDE know
       m_pProjectBrowser->disableNavigation();
-   
+
       foreach ( action, actions )
       {
          QObject::disconnect(action,SIGNAL(triggered()),this,SLOT(windowMenu_triggered()));
          menuWindow->removeAction(action);
       }
       menuWindow->setEnabled(menuWindow->actions().count()>0);
-   
+
       CCC65Interface::clear();
-   
+
       nesicideProject->terminateProject();
-   
+
       emit primeEmulator();
       emit resetEmulator();
-   
+
       if ( EnvironmentSettingsDialog::showWelcomeOnStart() )
       {
          tabWidget->addTab(tab,"Welcome Page");
          webView->setUrl(QUrl( "http://www.nesicide.com"));
       }
-   
+
       // Clear output
       output->clearAllPanes();
-   
+
       // Let the UI know what's up
       projectDataChangesEvent();
-   
+
       if ( !m_targetLoaded.compare("nes",Qt::CaseInsensitive) )
       {
          destroyNesUi();
@@ -2631,7 +2640,7 @@ bool MainWindow::closeProject()
          destroyC64Ui();
       }
    }
-   
+
    return cancel;
 }
 

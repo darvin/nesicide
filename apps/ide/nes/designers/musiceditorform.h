@@ -4,7 +4,9 @@
 #include "cdesignereditorbase.h"
 #include "cdesignercommon.h"
 
+#ifndef __APPLE__
 #include "MainFrm.h"
+#endif
 
 #include <QWidget>
 #include <QToolBar>
@@ -19,13 +21,15 @@ class MusicEditorForm : public CDesignerEditorBase
 public:
    MusicEditorForm(QString fileName,QByteArray musicData,IProjectTreeViewItem* link = 0,QWidget* parent = 0);
    ~MusicEditorForm();
-   
+
    // ICenterWidgetItem Interface Implmentation
    virtual void onSave();
 
 private:
    Ui::MusicEditorForm *ui;
+#ifndef __APPLE__
    CMainFrame* m_pMainFrame;
+#endif
    QString m_fileName;
 
 private slots:

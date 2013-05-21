@@ -35,8 +35,19 @@ win32 {
 }
 
 mac {
-   SDL_CXXFLAGS = -I$$DEPENDENCYPATH/SDL.framework/Headers
-   SDL_LIBS = -F$$DEPENDENCYPATH -framework SDL
+
+    isEmpty (SDL_CXXFLAGS) {
+       SDL_CXXFLAGS = $$system(sdl-config --cflags)
+    }
+
+    SDL_CXXFLAGS += -I/usr/local/include/wine/windows/ -DUSE_WS_PREFIX -DWINE_UNICODE_NATIVE
+    SDL_CFLAGS += -I/usr/local/include/wine/windows/
+
+    isEmpty (SDL_LIBS) {
+            SDL_LIBS = $$system(sdl-config --libs)
+    }
+
+
 }
 
 unix:!mac {
@@ -44,7 +55,7 @@ unix:!mac {
        SDL_CXXFLAGS = $$system(sdl-config --cflags)
     }
 
-    SDL_CXXFLAGS += -I/usr/include/wine/windows/ -DUSE_WS_PREFIX -DWINE_UNICODE_NATIVE
+    SDL_CXXFLAGS += -I/usr/include/wine/windows/ -DUSE_WS_PREFIX -DWINE_UNICODE_NATIVE -Dms_abi
     SDL_CFLAGS += -I/usr/include/wine/windows/
 
     isEmpty (SDL_LIBS) {
@@ -311,13 +322,13 @@ unix:!symbian {
 
 unix:mac {
 	# windows.h and co.
-	NIX_CFLAGS = -I $$DEPENDENCYPATH/wine/include -DWINE_UNICODE_NATIVE
-
+	NIX_CFLAGS = -I /usr/local/include/wine/windows -DWINE_UNICODE_NATIVE
 	# stdafx.h
 	NIX_CFLAGS += -I $$DEPENDENCYPATH
 	NIX_CFLAGS += -I $$DEPENDENCYPATH/stdafxhack
     #HEADERS += $$DEPENDENCYPATH/stdafx.h
-
+    QMAKE_CC = gcc
+    QMAKE_CXX = g++
 	QMAKE_CFLAGS   += $$NIX_CFLAGS
 	QMAKE_CXXFLAGS += $$NIX_CFLAGS
 }

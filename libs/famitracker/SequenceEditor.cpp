@@ -7,11 +7,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful, 
+** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-** Library General Public License for more details.  To obtain a 
-** copy of the GNU Library General Public License, write to the Free 
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.  To obtain a
+** copy of the GNU Library General Public License, write to the Free
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -34,12 +34,12 @@
 
 IMPLEMENT_DYNAMIC(CSequenceEditor, CWnd)
 
-CSequenceEditor::CSequenceEditor(CFamiTrackerDoc *pDoc) : CWnd(), 
-	m_pGraphEditor(NULL), 
+CSequenceEditor::CSequenceEditor(CFamiTrackerDoc *pDoc) : CWnd(),
+	m_pGraphEditor(NULL),
 	m_pSizeEditor(NULL),
 	m_pSetting(NULL),
 	m_pFont(NULL),
-	m_iMaxVol(15), 
+	m_iMaxVol(15),
 	m_iMaxDuty(3),
 	m_pDocument(pDoc)
 {
@@ -75,7 +75,7 @@ BOOL CSequenceEditor::CreateEditor(CWnd *pParentWnd, const RECT &rect)
 	GraphRect.bottom -= 25;
 
 	m_pSizeEditor = new CSizeEditor(this);
-	
+
 	if (m_pSizeEditor->CreateEx(NULL, NULL, _T(""), WS_CHILD | WS_VISIBLE, CRect(40, GraphRect.bottom + 5, 104, GraphRect.bottom + 22), this, 0) == -1)
 		return -1;
 
@@ -95,7 +95,7 @@ BOOL CSequenceEditor::CreateEditor(CWnd *pParentWnd, const RECT &rect)
 void CSequenceEditor::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-   
+
 	CRect rect;
 	GetClientRect(rect);
 
@@ -133,7 +133,7 @@ BOOL CSequenceEditor::PreTranslateMessage(MSG* pMsg)
 			GetClientRect(rect);
 			// Arpeggio
 			if (m_iSelectedSetting == SEQ_ARPEGGIO && m_pSequence->GetSetting() == 1) {
-				Text.Format(_T("{%i, %s}  "), pMsg->wParam, ((CArpeggioGraphEditor*)m_pGraphEditor)->GetNoteString(pMsg->lParam));
+				Text.Format(_T("{%i, %s}  "), pMsg->wParam, static_cast<const char*>(((CArpeggioGraphEditor*)m_pGraphEditor)->GetNoteString(pMsg->lParam)));
 			}
 			else
 				Text.Format(_T("{%i, %i}  "), pMsg->wParam, pMsg->lParam);
@@ -222,7 +222,7 @@ void CSequenceEditor::SelectSequence(CSequence *pSequence, int Type, int Instrum
 				m_pGraphEditor = new CNoiseEditor(pSequence, 31);
 			else
 				m_pGraphEditor = new CBarGraphEditor(pSequence, m_iMaxDuty);
-			break;		
+			break;
 	}
 
 	m_pSetting->SelectSequence(pSequence, Type, InstrumentType);

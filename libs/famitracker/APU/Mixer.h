@@ -7,11 +7,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful, 
+** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
-** Library General Public License for more details.  To obtain a 
-** copy of the GNU Library General Public License, write to the Free 
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.  To obtain a
+** copy of the GNU Library General Public License, write to the Free
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -21,8 +21,8 @@
 #ifndef _MIXER_H_
 #define _MIXER_H_
 
-#include "..\common.h"
-#include "..\Blip_Buffer\blip_buffer.h"
+#include "../common.h"
+#include "../Blip_Buffer/blip_buffer.h"
 
 enum CHAN_IDS {
 	CHANID_SQUARE1,
@@ -114,11 +114,11 @@ class CMixer
 		Blip_Synth<blip_good_quality, -500>		Synth2A03SS;
 		Blip_Synth<blip_good_quality, -500>		Synth2A03TND;
 		Blip_Synth<blip_good_quality, -500>		SynthVRC6;
-		Blip_Synth<blip_good_quality, -130>		SynthMMC5;	
+		Blip_Synth<blip_good_quality, -130>		SynthMMC5;
 		Blip_Synth<blip_good_quality, -1600>	SynthN163;
 		Blip_Synth<blip_good_quality, -3500>	SynthFDS;
 		Blip_Synth<blip_good_quality, -2000>	SynthS5B;
-		
+
 
 		// Blip buffer object
 		Blip_Buffer	BlipBuffer;

@@ -47,8 +47,9 @@ mac {
    }
    NESICIDE_LIBS = -L$$TOP/libs/nes/$$BUILD_DIR -lnes-emulator
 
-   SDL_CXXFLAGS = -I$$TOP/deps/osx/SDL.framework/Headers
-   SDL_LIBS = -F$$TOP/deps/osx -framework SDL
+   SDL_CXXFLAGS = $$system(sdl-config --cflags)
+   SDL_LIBS = $$system(sdl-config --libs)
+
 
   QMAKE_POST_LINK += mkdir -p \'$${BUILD_DIR}/$${TARGET}.app/Contents/Frameworks\' $$escape_expand(\n\t)
    QMAKE_POST_LINK += cp \'$$TOP/libs/nes/$${BUILD_DIR}/libnes-emulator.1.0.0.dylib\' \
@@ -56,7 +57,7 @@ mac {
    QMAKE_POST_LINK += install_name_tool -change libnes-emulator.1.dylib \
       @executable_path/../Frameworks/libnes-emulator.1.dylib \'$${BUILD_DIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\' $$escape_expand(\n\t)
 
-   ICON = ./Resources/controller.icns
+   ICON = ../../common/resources/controller.icns
 }
 
 unix:!mac {
